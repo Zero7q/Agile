@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Caching\**" />
+    <Compile Remove="Configuration\**" />
+    <Compile Remove="Events\**" />
+    <EmbeddedResource Remove="Caching\**" />
+    <EmbeddedResource Remove="Configuration\**" />
+    <EmbeddedResource Remove="Events\**" />
+    <None Remove="Caching\**" />
+    <None Remove="Configuration\**" />
+    <None Remove="Events\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="log4net" Version="2.0.8" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Agile.Core\Agile.Core.csproj" />
+    <ProjectReference Include="..\Agile.Data\Agile.Data.csproj" />
+  </ItemGroup>
+
+</Project>

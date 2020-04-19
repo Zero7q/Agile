@@ -1,0 +1,41 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href="~/agile/assets/images/favicon.ico" rel="icon">
+    <title>Agile系统后台</title>
+    <<link rel="stylesheet" href="~/agile/assets/libs/layui/css/layui.css" />
+    <link rel="stylesheet" href="~/agile/assets/module/admin.css?v=317" />
+    @RenderSection("Styles", required: false)
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <!-- js部分 -->
+    <script type="text/javascript" src="~/agile/assets/libs/layui/layui.js"></script>
+    <script type="text/javascript" src="~/agile/assets/js/common.js?v=317"></script>
+</head>
+<body class="layui-layout-body">
+    <div class="layui-layout layui-layout-admin">
+        <!-- 头部 -->
+        @await Component.InvokeAsync("Header")
+
+        <!-- 侧边栏 -->
+        @await Component.InvokeAsync("Menu")
+
+        <!-- 主体部分 -->
+        @await Component.InvokeAsync("Body")
+
+        <!-- 底部 -->
+        @await Component.InvokeAsync("Footer")
+    </div>
+
+    <!-- 加载动画 -->
+    @await Component.InvokeAsync("Loading")
+   
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

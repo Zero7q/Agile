@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Mapping\**" />
+    <Compile Remove="Migrations\**" />
+    <EmbeddedResource Remove="Mapping\**" />
+    <EmbeddedResource Remove="Migrations\**" />
+    <None Remove="Mapping\**" />
+    <None Remove="Migrations\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="AgileDataDefaults.cs" />
+    <Compile Remove="AgileDataSettingsDefaults.cs" />
+    <Compile Remove="BaseDataProvider.cs" />
+    <Compile Remove="DataProviderManager.cs" />
+    <Compile Remove="DataProviderType.cs" />
+    <Compile Remove="DataSettings.cs" />
+    <Compile Remove="DataSettingsManager.cs" />
+    <Compile Remove="EntityRepository.cs" />
+    <Compile Remove="IAgileConnectionStringInfo.cs" />
+    <Compile Remove="IAgileDataProvider.cs" />
+    <Compile Remove="IDataProviderManager.cs" />
+    <Compile Remove="IRepository.cs" />
+    <Compile Remove="MsSqlAgileDataProvider.cs" />
+    <Compile Remove="MySqlAgileDataProvider.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentMigrator.Runner.Core" Version="3.2.6" />
+    <PackageReference Include="linq2db" Version="2.9.8" />
+    <PackageReference Include="MySql.Data" Version="8.0.19" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Agile.Core\Agile.Core.csproj" />
+  </ItemGroup>
+
+</Project>

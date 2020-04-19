@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@section Scripts{
+    <script>
+        layui.use(['layer', 'element', 'admin', 'index', 'laytpl', 'element'], function () {
+            var $ = layui.jquery;
+            var layer = layui.layer;
+            var admin = layui.admin;
+            var index = layui.index;
+            var laytpl = layui.laytpl;
+            var element = layui.element;
+
+            // 默认加载主页
+            index.loadHome({
+                menuPath: '/agile/page/console/console.html',
+                menuName: '<i class="layui-icon layui-icon-home"></i>',
+                loadSetting: false
+            });
+        });
+    </script>
+}

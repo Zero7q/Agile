@@ -1,0 +1,11 @@
+﻿{
+  "Group": "博客",
+  "FriendlyName": "博客论坛",
+  "SystemName": "Blog",
+  "Version": "1.38",
+  "SupportedVersions": [ "4.30" ],
+  "Author": "lsoey",
+  "DisplayOrder": 1,
+  "FileName": "Agile.Plugin.Blog.dll",
+  "Description": "程序员开发论坛"
+}
