@@ -15,7 +15,8 @@ namespace Agile.Plugin.Blog.Controllers
     {
         public IActionResult Index(string type)
         {
-            string result = BlogService.Show();
+            //测试插件调用外部dll
+            //string result = BlogService.Show();
 
             if (string.IsNullOrWhiteSpace(type))
             {
