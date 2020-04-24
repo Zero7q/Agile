@@ -5,17 +5,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Caching\**" />
 	  <Compile Remove="Configuration\**" />
 	  <Compile Remove="Domain\**" />
 	  <Compile Remove="Events\**" />
 	  <Compile Remove="Http\**" />
-	  <EmbeddedResource Remove="Caching\**" />
 	  <EmbeddedResource Remove="Configuration\**" />
 	  <EmbeddedResource Remove="Domain\**" />
 	  <EmbeddedResource Remove="Events\**" />
 	  <EmbeddedResource Remove="Http\**" />
-	  <None Remove="Caching\**" />
 	  <None Remove="Configuration\**" />
 	  <None Remove="Domain\**" />
 	  <None Remove="Events\**" />
@@ -23,7 +20,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Remove="BaseEntity.cs" />
 	  <Compile Remove="HashHelper.cs" />
 	  <Compile Remove="IStoreContext.cs" />
 	  <Compile Remove="IWebHelper.cs" />
@@ -31,6 +27,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
+		<PackageReference Include="Dapper.Contrib" Version="2.0.35" />
 		<PackageReference Include="log4net" Version="2.0.8" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.3" />
 	</ItemGroup>

@@ -4,6 +4,7 @@
 //using Agile.Core.Domain.Stores;
 using Agile.Core.Infrastructure;
 using Agile.Core.Infrastructure.DependencyManagement;
+using Agile.Data;
 //using Agile.Data;
 //using Agile.Services.Configuration;
 //using Agile.Services.Events;
@@ -30,10 +31,14 @@ namespace Agile.Web.Framework.Infrastructure
 
             //builder.RegisterType<WebHelper>().As<IWebHelper>().InstancePerLifetimeScope();
 
-            //builder.RegisterType<DataProviderManager>().As<IDataProviderManager>().InstancePerDependency();
-            //builder.Register(context => context.Resolve<IDataProviderManager>().DataProvider).As<IAgileDataProvider>().InstancePerDependency();
+            builder.RegisterType<DataProviderManager>().As<IDataProviderManager>().InstancePerDependency();
 
-            //builder.RegisterGeneric(typeof(EntityRepository<>)).As(typeof(IRepository<>)).InstancePerLifetimeScope();
+            builder.RegisterGeneric(typeof(EntityRepository<>)).As(typeof(IRepository<>)).InstancePerLifetimeScope();
+
+            builder.RegisterGeneric(typeof(EntityRepository<>)).As(typeof(IRepository<>)).InstancePerLifetimeScope();
+
+
+
 
             //builder.RegisterType<MemoryCacheManager>()
             //       .As<ILocker>()
