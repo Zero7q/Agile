@@ -36,7 +36,7 @@
         var element = layui.element;
 
         // ajax渲染侧边栏
-        $.get('/agile/json/side.json', function (res) {
+        $.get('/admin/menu/side', function (res) {
             laytpl(sideNav.innerHTML).render(res.data, function (html) {
                 $('*[lay-filter=admin-side-nav]').html(html);
                 element.render('nav');

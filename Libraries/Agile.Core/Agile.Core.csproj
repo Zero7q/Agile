@@ -6,15 +6,12 @@
 
 	<ItemGroup>
 	  <Compile Remove="Configuration\**" />
-	  <Compile Remove="Domain\**" />
 	  <Compile Remove="Events\**" />
 	  <Compile Remove="Http\**" />
 	  <EmbeddedResource Remove="Configuration\**" />
-	  <EmbeddedResource Remove="Domain\**" />
 	  <EmbeddedResource Remove="Events\**" />
 	  <EmbeddedResource Remove="Http\**" />
 	  <None Remove="Configuration\**" />
-	  <None Remove="Domain\**" />
 	  <None Remove="Events\**" />
 	  <None Remove="Http\**" />
 	</ItemGroup>

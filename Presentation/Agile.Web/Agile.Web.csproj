@@ -7,7 +7,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
-		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.2" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -16,7 +16,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="Domain\" />
 	  <Folder Include="Models\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="DapperExtensions">
+	    <HintPath>..\..\..\DapperExtensions\DapperExtensions\bin\Release\netcoreapp3.1\DapperExtensions.dll</HintPath>
+	  </Reference>
 	</ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
 ﻿using Agile.Core.Caching;
+using Agile.Core.Domain;
 using Dapper.Contrib.Extensions;
 using System;
 using System.Collections.Generic;
@@ -10,5 +11,13 @@ namespace Agile.Core
     {
         [Key]
         public int Id { get; set; }
+
+        public DateTime CreateTime { get; set; }
+
+        public DateTime? UpdateTime { get; set; }
+
+        public int Sort { get; set; }
+
+        public EnabledType IsEnabled { get; set; }
     }
 }

@@ -79,6 +79,12 @@ namespace Agile.Data
             return Database.RunInTransaction(func);
         }
 
+
+        public T RunInTransaction<T>(Func<T> func)
+        {
+            return Database.RunInTransaction<T>(func);
+        }
+
         public TEntity Get(dynamic id, IDbTransaction transaction, int? commandTimeout = null)
         {
             return Database.Get(id, transaction, commandTimeout);
@@ -89,6 +95,15 @@ namespace Agile.Data
             return Database.Get(id, commandTimeout);
         }
 
+        public TEntity GetByCondition(object predicate, IDbTransaction transaction, int? commandTimeout = null)
+        {
+            return Database.GetList<TEntity>(predicate, null, transaction, commandTimeout).FirstOrDefault();
+        }
+
+        public TEntity GetByCondition(object predicate, int? commandTimeout = null)
+        {
+            return Database.GetList<TEntity>(predicate, null, commandTimeout).FirstOrDefault();
+        }
         public void Insert(IEnumerable<TEntity> entities, IDbTransaction transaction, int? commandTimeout = null)
         {
             Database.Insert(entities, transaction, commandTimeout);
@@ -101,12 +116,14 @@ namespace Agile.Data
 
         public dynamic Insert(TEntity entity, IDbTransaction transaction, int? commandTimeout = null)
         {
-            return Database.Insert(entity, transaction, commandTimeout);
+            Database.Insert(entity, transaction, commandTimeout);
+            return entity;
         }
 
         public dynamic Insert(TEntity entity, int? commandTimeout = null)
         {
-            return Database.Insert(entity, commandTimeout);
+            Database.Insert(entity, commandTimeout);
+            return entity;
         }
 
         public bool Update(TEntity entity, IDbTransaction transaction, int? commandTimeout = null, bool ignoreAllKeyProperties = false)
@@ -159,16 +176,6 @@ namespace Agile.Data
             return Database.GetPage<TEntity>(predicate, sort, page, resultsPerPage, commandTimeout, buffered);
         }
 
-        public IEnumerable<TEntity> GetSet(object predicate, IList<ISort> sort, int firstResult, int maxResults, IDbTransaction transaction, int? commandTimeout, bool buffered)
-        {
-            return Database.GetSet<TEntity>(predicate, sort, firstResult, maxResults, transaction, commandTimeout, buffered);
-        }
-
-        public IEnumerable<TEntity> GetSet(object predicate, IList<ISort> sort, int firstResult, int maxResults, int? commandTimeout, bool buffered)
-        {
-            return Database.GetSet<TEntity>(predicate, sort, firstResult, maxResults, commandTimeout, buffered);
-        }
-
         public int Count(object predicate, IDbTransaction transaction, int? commandTimeout = null)
         {
             return Database.Count<TEntity>(predicate, transaction, commandTimeout);
@@ -178,17 +185,6 @@ namespace Agile.Data
         {
             return Database.Count<TEntity>(predicate, commandTimeout);
         }
-
-        public IMultipleResultReader GetMultiple(GetMultiplePredicate predicate, IDbTransaction transaction, int? commandTimeout = null)
-        {
-            return Database.GetMultiple(predicate, transaction, commandTimeout);
-        }
-
-        public IMultipleResultReader GetMultiple(GetMultiplePredicate predicate, int? commandTimeout = null)
-        {
-            return Database.GetMultiple(predicate, commandTimeout);
-        }
-
         public void ClearCache()
         {
             Database.ClearCache();
@@ -213,9 +209,9 @@ namespace Agile.Data
             }
         }
 
-        public IEnumerable<T> ExecuteSql<T>(string sql)
+        public IEnumerable<T> Query<T>(string sql, object param = null, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = null, CommandType? commandType = null)
         {
-            return Database.Connection.Query<T>(sql);
+            return Database.Connection.Query<T>(sql, param, transaction, buffered, commandTimeout, commandType);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Agile.Core.Infrastructure;
 using Agile.Core.Logging;
+using Agile.Services.Menus;
 using Agile.Web.Framework.Mvc.Routing;
 using log4net;
 using log4net.Config;
@@ -38,6 +39,8 @@ namespace Agile.Web.Framework.Infrastructure.Extensions
         public static void StartEngine(this IApplicationBuilder application)
         {
             EngineContext.Current.Resolve<ILogger>().Information("系统引擎正在启动..", typeof(ApplicationBuilderExtensions));
+
+            EngineContext.Current.Resolve<IMenuParseService>().InitializeMenus();
         }
 
         /// <summary>
