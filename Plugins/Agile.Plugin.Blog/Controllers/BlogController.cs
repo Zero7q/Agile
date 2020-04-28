@@ -1,5 +1,6 @@
 ﻿using Agile.Core;
 using Agile.Data;
+using Agile.Models.Menus.Infrastructure;
 using Agile.Plugin.Blog.Domain;
 using Agile.Plugin.Blog.Models;
 using Agile.Services.Menus;
@@ -17,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace Agile.Plugin.Blog.Controllers
 {
-    [MenuAttribute("一级菜单|一级菜单|三级菜单|四级菜单", "layui-icon layui-icon-home", "/admin/blog/index")]
+    [MenuAttribute(MenuType.Display, "插件系统|博客插件|前端管理|博客首页", "/admin/blog/index")]
     public class BlogController : BasePluginController
     {
         public IActionResult Index(string type)

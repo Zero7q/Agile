@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Agile.Data\Agile.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DapperExtensions">
+      <HintPath>..\..\..\DapperExtensions\DapperExtensions\bin\Release\netcoreapp3.1\DapperExtensions.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

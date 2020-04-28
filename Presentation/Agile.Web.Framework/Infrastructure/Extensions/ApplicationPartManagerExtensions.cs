@@ -1,7 +1,7 @@
 ﻿using Agile.Core;
 using Agile.Core.ComponentModel;
 using Agile.Core.Infrastructure;
-using Agile.Services.Plugins;
+using Agile.Models.Plugins.Infrastruture;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using System;
 using System.Collections.Generic;

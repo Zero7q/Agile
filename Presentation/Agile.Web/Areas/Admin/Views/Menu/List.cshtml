@@ -1,0 +1,70 @@
+﻿@model Agile.Models.Menus.ViewModel.MenuViewModel
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_ListLayout.cshtml";
+}
+
+<div class="layui-inline">
+    <label class="layui-form-label">@Html.DisplayNameFor(s => s.Name)：</label>
+    <div class="layui-input-inline">
+        @Html.DropDownListFor(s => s.ParentId, Model.ParentSelectItems)
+    </div>
+</div>
+<div class="layui-inline">
+    <label class="layui-form-label">@Html.DisplayNameFor(s => s.Name)：</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(s => s.Name, new { @class = "layui-input", @placeholder = $"请输入{Html.DisplayNameFor(s => s.Name)}" })
+    </div>
+</div>
+
+@section Scripts{
+
+    <!-- 表格操作列 -->
+    <script type="text/html" id="agileTbBar">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+
+    <script type="text/html" id="agileToolbar">
+        <button lay-event="add" class="layui-btn icon-btn"><i class="layui-icon">&#xe654;</i>添加</button>&nbsp;
+        <button lay-event="del" class="layui-btn layui-btn-danger icon-btn"><i class="layui-icon">&#xe640;</i>删除</button>
+    </script>
+    <script>
+        layui.use(['layer', 'form', 'admin', 'treeTable', 'util', 'xmSelect'], function () {
+            var $ = layui.jquery;
+            var layer = layui.layer;
+            var form = layui.form;
+            var admin = layui.admin;
+            var treeTable = layui.treeTable;
+            var util = layui.util;
+            var xmSelect = layui.xmSelect;
+            var tbDataList = [];
+
+            // 渲染表格
+            var insTb = treeTable.render({
+                elem: '#authoritiesTable',
+                tree: {
+                    iconIndex: 1,
+                    idName: 'id',
+                    pidName: 'parentId',
+                    isPidData: true
+                },
+                cellMinWidth: 100,
+                cols: [
+                    { type: 'numbers' },
+                    { type: 'numbers' },
+                    { field: 'name', title: '菜单名称', sort: true },
+                    { field: 'icon', title: '菜单图标', sort: true },
+                    { field: 'url', title: '菜单地址', sort: true },
+                    { title: '操作', toolbar: '#agileTbBar', align: 'center', minWidth: 200 }
+                ],
+                reqData: function (data, callback) {
+                    $.get('/admin/menu/getdata', function (res) {
+                        tbDataList = res.data ? res.data : [];
+                        callback(res.data);
+                    });
+                }
+            });
+        });
+    </script>
+}

@@ -9,7 +9,7 @@ using System.Text;
 namespace Agile.Plugin.Blog.Domain
 {
     [Table("Role")]
-    [DataBaseProviderAttrobute(DataProviderType.MySql)]
+    [DataBaseAttrobute(DataProviderType.MySql)]
     public class Role : BaseEntity
     {
         public string Name { get; set; }

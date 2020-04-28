@@ -1,4 +1,7 @@
-﻿using DapperExtensions;
+﻿using Agile.Models.Menus.Domain;
+using Agile.Models.Menus.ViewModel;
+using DapperExtensions;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,6 +23,11 @@ namespace Agile.Services.Menus
         IEnumerable<Menu> GetList(object predicate = null, IList<ISort> sort = null);
 
         IEnumerable<Menu> GetPage(object predicate, IList<ISort> sort, int page, int resultsPerPage);
+
         List<MenuViewModel> GetMenus();
+
+        IEnumerable<SelectListItem> ParentSelectItems();
+
+        List<MenuViewModel> GetTreeMenus();
     }
 }

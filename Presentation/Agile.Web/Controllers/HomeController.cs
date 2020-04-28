@@ -15,5 +15,15 @@ namespace Agile.Web.Controllers
         {
             return View();
         }
+
+        public IActionResult Console()
+        {
+            return View();
+        }
+
+        public IActionResult Theme()
+        {
+            return View();
+        }
     }
 }

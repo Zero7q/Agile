@@ -1,4 +1,6 @@
 ﻿using Agile.Core.Infrastructure;
+using Agile.Models.Menus.Domain;
+using Agile.Models.Menus.Infrastructure;
 using DapperExtensions;
 using System;
 using System.Collections.Generic;
@@ -58,7 +60,7 @@ namespace Agile.Services.Menus
                                         menuItem.Node = node;
                                         menuItem.Name = menu;
                                         menuItem.Icon = menuAttribute.Icon;
-                                        menuItem.Url = isLastNode == true ? menuAttribute.Url : "javascript:;";
+                                        menuItem.OpenUrl = isLastNode == true ? menuAttribute.OpenUrl : "javascript:;";
                                         menuItem.CreateTime = DateTime.Now;
                                         menuItem.IsEnabled = Core.Domain.EnabledType.True;
                                         _menuService.Insert(menuItem);

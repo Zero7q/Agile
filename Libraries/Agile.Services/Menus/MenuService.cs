@@ -1,5 +1,8 @@
 ﻿using Agile.Data;
+using Agile.Models.Menus.Domain;
+using Agile.Models.Menus.ViewModel;
 using DapperExtensions;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -51,7 +54,7 @@ namespace Agile.Services.Menus
 
         public List<MenuViewModel> GetMenus()
         {
-            List<MenuViewModel> menuViewModel = new List<MenuViewModel>();
+            var menuViewModel = new List<MenuViewModel>();
             var parentMenus = GetList(Predicates.Field<Menu>(f => f.ParentId, Operator.Eq, -1));
             if (parentMenus != null)
             {
@@ -60,7 +63,7 @@ namespace Agile.Services.Menus
                     MenuViewModel menuViewModelItem = new MenuViewModel();
                     menuViewModelItem.Name = menu.Name;
                     menuViewModelItem.Icon = menu.Icon;
-                    menuViewModelItem.Url = menu.Url;
+                    menuViewModelItem.OpenUrl = menu.OpenUrl;
                     menuViewModel.Add(menuViewModelItem);
 
                     GetChildMenus(menu.Id, menuViewModelItem);
@@ -79,13 +82,49 @@ namespace Agile.Services.Menus
                     MenuViewModel childMenuViewModelItem = new MenuViewModel();
                     childMenuViewModelItem.Name = childMenu.Name;
                     childMenuViewModelItem.Icon = childMenu.Icon;
-                    childMenuViewModelItem.Url = childMenu.Url;
-                    menuViewModelItem.SubMenus = new List<MenuViewModel>();
+                    childMenuViewModelItem.OpenUrl = childMenu.OpenUrl;
+                    if (menuViewModelItem.SubMenus == null)
+                    {
+                        menuViewModelItem.SubMenus = new List<MenuViewModel>();
+                    }
                     menuViewModelItem.SubMenus.Add(childMenuViewModelItem);
-
                     GetChildMenus(childMenu.Id, childMenuViewModelItem);
                 }
             }
+        }
+
+        public IEnumerable<SelectListItem> ParentSelectItems()
+        {
+            var selectListItems = new List<SelectListItem>();
+            selectListItems.Add(new SelectListItem() { Value = "-1", Text = "请选择上级菜单" });
+            var menus = GetList(Predicates.Field<Menu>(f => f.ParentId, Operator.Eq, -1));
+            if (menus != null)
+            {
+                foreach (var menu in menus)
+                {
+                    selectListItems.Add(new SelectListItem() { Value = menu.Id.ToString(), Text = menu.Name });
+                }
+            }
+            return selectListItems;
+        }
+
+        public List<MenuViewModel> GetTreeMenus()
+        {
+            var menuViewModel = new List<MenuViewModel>();
+            var parentMenus = GetList();
+            if (parentMenus != null)
+            {
+                foreach (var menu in parentMenus)
+                {
+                    MenuViewModel menuViewModelItem = new MenuViewModel();
+                    menuViewModelItem.Name = menu.Name;
+                    menuViewModelItem.Icon = menu.Icon;
+                    menuViewModelItem.OpenUrl = menu.OpenUrl;
+                    menuViewModelItem.ParentId = menu.ParentId;
+                    menuViewModel.Add(menuViewModelItem);
+                }
+            }
+            return menuViewModel;
         }
     }
 }

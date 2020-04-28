@@ -30,16 +30,16 @@ namespace Agile.Data
                 if (_database == null)
                 {
                     Type type = typeof(TEntity);
-                    if (!type.IsDefined(typeof(DataBaseProviderAttrobute), false))
+                    if (!type.IsDefined(typeof(DataBaseAttrobute), false))
                     {
                         throw new Exception("数据库类型配置未定义！");
                     }
-                    Attribute attribute = Attribute.GetCustomAttribute(type, typeof(DataBaseProviderAttrobute), false);
+                    Attribute attribute = Attribute.GetCustomAttribute(type, typeof(DataBaseAttrobute), false);
                     if (attribute == null)
                     {
                         throw new AgileException("数据库类型配置获取失败！");
                     }
-                    DataBaseProviderAttrobute dataBaseAttrobute = (DataBaseProviderAttrobute)attribute;
+                    DataBaseAttrobute dataBaseAttrobute = (DataBaseAttrobute)attribute;
                     if (dataBaseAttrobute == null)
                     {
                         throw new Exception("数据库类型配置获取失败！");

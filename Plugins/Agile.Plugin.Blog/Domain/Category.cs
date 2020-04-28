@@ -9,7 +9,7 @@ using System.Text;
 namespace Agile.Plugin.Blog.Domain
 {
     [Table("Category")]
-    [DataBaseProviderAttrobute(DataProviderType.SqlServer)]
+    [DataBaseAttrobute(DataProviderType.SqlServer)]
     public class Category : BaseEntity
     {
         public string Name { get; set; }
