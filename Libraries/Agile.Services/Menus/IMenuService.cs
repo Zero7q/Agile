@@ -10,24 +10,24 @@ namespace Agile.Services.Menus
 {
     public interface IMenuService
     {
-        void Insert(IEnumerable<Menu> entities);
+        void Insert(IEnumerable<SysMenu> entities);
 
-        Menu Insert(Menu entity);
+        SysMenu Insert(SysMenu entity);
 
         bool Delete(object predicate);
 
-        Menu GetByCondition(object predicate);
+        SysMenu GetByCondition(object predicate);
 
-        bool Update(Menu entity);
+        bool Update(SysMenu entity);
 
-        IEnumerable<Menu> GetList(object predicate = null, IList<ISort> sort = null);
+        IEnumerable<SysMenu> GetList(object predicate = null, IList<ISort> sort = null);
 
-        IEnumerable<Menu> GetPage(object predicate, IList<ISort> sort, int page, int resultsPerPage);
+        IEnumerable<SysMenu> GetPage(object predicate, IList<ISort> sort, int page, int resultsPerPage);
 
-        List<MenuViewModel> GetMenus();
+        List<SysMenuViewModel> GetMenus();
 
         IEnumerable<SelectListItem> ParentSelectItems();
 
-        List<MenuViewModel> GetTreeMenus();
+        List<SysMenuViewModel> GetTreeMenus();
     }
 }

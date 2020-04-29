@@ -38,33 +38,36 @@ namespace Agile.Services.Menus
                         if (attribute != null)
                         {
                             var menuAttribute = (MenuAttribute)attribute;
-                            if (menuAttribute != null)
+                            if (menuAttribute != null && !string.IsNullOrWhiteSpace(menuAttribute.Name))
                             {
-                                Menu parentMenu = null;
+                                SysMenu parentMenu = null;
                                 var menusItems = menuAttribute.Name.Split('|');
-                                for (int i = 0; i < menusItems.Length; i++)
+                                if (menusItems != null && menusItems.Length > 0)
                                 {
-                                    bool isLastNode = i == menusItems.Length - 1 ? true : false;
-                                    string menu = menusItems[i];
-                                    string node = (menu + i).ToString();
-                                    var predicate = Predicates.Field<Menu>(f => f.Node, Operator.Eq, node);
-                                    var menuModel = _menuService.GetByCondition(predicate);
-                                    if (menuModel != null)
+                                    for (int i = 0; i < menusItems.Length; i++)
                                     {
-                                        parentMenu = menuModel;
-                                    }
-                                    else
-                                    {
-                                        var menuItem = new Menu();
-                                        menuItem.ParentId = parentMenu == null ? -1 : parentMenu.Id;
-                                        menuItem.Node = node;
-                                        menuItem.Name = menu;
-                                        menuItem.Icon = menuAttribute.Icon;
-                                        menuItem.OpenUrl = isLastNode == true ? menuAttribute.OpenUrl : "javascript:;";
-                                        menuItem.CreateTime = DateTime.Now;
-                                        menuItem.IsEnabled = Core.Domain.EnabledType.True;
-                                        _menuService.Insert(menuItem);
-                                        parentMenu = menuItem;
+                                        bool isLastNode = i == menusItems.Length - 1 ? true : false;
+                                        string menu = menusItems[i];
+                                        string node = (menu + i).ToString();
+                                        var predicate = Predicates.Field<SysMenu>(f => f.Node, Operator.Eq, node);
+                                        var menuModel = _menuService.GetByCondition(predicate);
+                                        if (menuModel != null)
+                                        {
+                                            parentMenu = menuModel;
+                                        }
+                                        else
+                                        {
+                                            var menuItem = new SysMenu();
+                                            menuItem.ParentId = parentMenu == null ? -1 : parentMenu.Id;
+                                            menuItem.Node = node;
+                                            menuItem.Name = menu;
+                                            menuItem.Icon = menuAttribute.Icon;
+                                            menuItem.OpenUrl = isLastNode == true ? menuAttribute.OpenUrl : "javascript:;";
+                                            menuItem.CreateTime = DateTime.Now;
+                                            menuItem.IsEnabled = Core.Domain.EnabledType.True;
+                                            _menuService.Insert(menuItem);
+                                            parentMenu = menuItem;
+                                        }
                                     }
                                 }
                             }

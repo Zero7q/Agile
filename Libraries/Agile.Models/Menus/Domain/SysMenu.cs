@@ -12,7 +12,7 @@ namespace Agile.Models.Menus.Domain
     /// </summary>
     [Table("Menu")]
     [DataBaseAttrobute(DataProviderType.MySql)]
-    public class Menu : BaseEntity
+    public class SysMenu : BaseEntity
     {
         /// <summary>
         /// 菜单节点

@@ -1,4 +1,4 @@
-﻿@model Agile.Models.Menus.ViewModel.MenuViewModel
+﻿@model Agile.Models.Menus.ViewModel.SysMenuViewModel
 @{
     ViewData["Title"] = "List";
     Layout = "~/Views/Shared/_ListLayout.cshtml";
@@ -7,28 +7,18 @@
 <div class="layui-inline">
     <label class="layui-form-label">@Html.DisplayNameFor(s => s.Name)：</label>
     <div class="layui-input-inline">
-        @Html.DropDownListFor(s => s.ParentId, Model.ParentSelectItems)
+        @Html.TextBox("name", Model.Name, new { @class = "layui-input", @placeholder = $"请输入{Html.DisplayNameFor(s => s.Name)}" })
     </div>
 </div>
+
 <div class="layui-inline">
-    <label class="layui-form-label">@Html.DisplayNameFor(s => s.Name)：</label>
+    <label class="layui-form-label">@Html.DisplayNameFor(s => s.Url)：</label>
     <div class="layui-input-inline">
-        @Html.TextBoxFor(s => s.Name, new { @class = "layui-input", @placeholder = $"请输入{Html.DisplayNameFor(s => s.Name)}" })
+        @Html.TextBox("url", Model.Url, new { @class = "layui-input", @placeholder = $"请输入{Html.DisplayNameFor(s => s.Url)}" })
     </div>
 </div>
 
 @section Scripts{
-
-    <!-- 表格操作列 -->
-    <script type="text/html" id="agileTbBar">
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
-        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-    </script>
-
-    <script type="text/html" id="agileToolbar">
-        <button lay-event="add" class="layui-btn icon-btn"><i class="layui-icon">&#xe654;</i>添加</button>&nbsp;
-        <button lay-event="del" class="layui-btn layui-btn-danger icon-btn"><i class="layui-icon">&#xe640;</i>删除</button>
-    </script>
     <script>
         layui.use(['layer', 'form', 'admin', 'treeTable', 'util', 'xmSelect'], function () {
             var $ = layui.jquery;
@@ -42,29 +32,114 @@
 
             // 渲染表格
             var insTb = treeTable.render({
-                elem: '#authoritiesTable',
+                elem: '#agileTable',
                 tree: {
                     iconIndex: 1,
                     idName: 'id',
                     pidName: 'parentId',
                     isPidData: true
                 },
+                toolbar:'#agileToolbar',
                 cellMinWidth: 100,
                 cols: [
                     { type: 'numbers' },
-                    { type: 'numbers' },
-                    { field: 'name', title: '菜单名称', sort: true },
-                    { field: 'icon', title: '菜单图标', sort: true },
-                    { field: 'url', title: '菜单地址', sort: true },
-                    { title: '操作', toolbar: '#agileTbBar', align: 'center', minWidth: 200 }
+                    { field: 'name', title: '菜单名称', sort: true, width: 380},
+                    { title: '菜单图标', templet: '<p><i class="{{d.icon}}"></i></p>', align: 'center', width: 120 },
+                    { field: 'url', title: '菜单地址', sort: true }
                 ],
                 reqData: function (data, callback) {
-                    $.get('/admin/menu/getdata', function (res) {
+                    $.get('/admin/menu/gettreedata', function (res) {
                         tbDataList = res.data ? res.data : [];
                         callback(res.data);
                     });
                 }
             });
+
+            /* 表格搜索 */
+            form.on('submit(agileTbSearch)', function (data) {
+                doTbSearch(data.field, 'id');
+                return false;
+            });
+
+            /* 搜索表格数据 */
+            function doTbSearch(field, idName) {
+                var ids = [], isClear = true;
+                for (var i = 0; i < tbDataList.length; i++) {
+                    var item = tbDataList[i], flag = true;
+                    for (var f in field) {
+                        if (!field.hasOwnProperty(f)) continue;
+                        if (!field[f]) continue;
+                        isClear = false;
+                        if (!item[f] || item[f].indexOf(field[f]) === -1) {
+                            flag = false;
+                            break;
+                        }
+                    }
+                    if (flag) ids.push(item[idName]);
+                }
+                if (isClear) {
+                    insTb.clearFilter();
+                } else {
+                    insTb.filterData(ids);
+                }
+            }
+
+            /* 添加 */
+            $('#authoritiesAddBtn').click(function () {
+                showEditModel();
+            });
+
+            /* 显示表单弹窗 */
+            function showEditModel(mData) {
+                admin.open({
+                    type: 2,
+                    area: ['600px', '600px'],
+                    title: (mData ? '修改' : '添加') + '权限',
+                    content:'/admin/menu/add',
+                    success: function (layero, dIndex) {
+                        // 回显表单数据
+                        form.val('authoritiesEditForm', mData);
+                        // 表单提交事件
+                        form.on('submit(authoritiesEditSubmit)', function (data) {
+                            data.field.parentId = insXmSel.getValue('valueStr');
+                            var loadIndex = layer.load(2);
+                            $.get(mData ? '../../json/ok.json' : '../../json/ok.json', data.field, function (res) {
+                                layer.close(loadIndex);
+                                if (res.code === 200) {
+                                    layer.close(dIndex);
+                                    layer.msg(res.msg, { icon: 1 });
+                                    insTb.refresh();
+                                } else {
+                                    layer.msg(res.msg, { icon: 2 });
+                                }
+                            }, 'json');
+                            return false;
+                        });
+                        // 渲染下拉树
+                        var insXmSel = xmSelect.render({
+                            el: '#authoritiesEditParentSel',
+                            height: '250px',
+                            data: insTb.options.data,
+                            initValue: mData ? [mData.parentId] : [],
+                            model: { label: { type: 'text' } },
+                            prop: {
+                                name: 'authorityName',
+                                value: 'authorityId'
+                            },
+                            radio: true,
+                            clickClose: true,
+                            tree: {
+                                show: true,
+                                indent: 15,
+                                strict: false,
+                                expandedKeys: true
+                            }
+                        });
+                        // 弹窗不出现滚动条
+                        $(layero).children('.layui-layer-content').css('overflow', 'visible');
+                    }
+                });
+            }
         });
     </script>
 }

@@ -7,7 +7,6 @@ namespace Agile.Models.Menus.Infrastructure
     /// <summary>
     /// 菜单特性
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class)]
     public class MenuAttribute : Attribute
     {
         /// <summary>

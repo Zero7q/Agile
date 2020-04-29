@@ -11,8 +11,8 @@ namespace Agile.Services.Menus
 {
     public class MenuService : IMenuService
     {
-        private readonly IRepository<Menu> _repository;
-        public MenuService(IRepository<Menu> repository)
+        private readonly IRepository<SysMenu> _repository;
+        public MenuService(IRepository<SysMenu> repository)
         {
             _repository = repository;
         }
@@ -22,48 +22,48 @@ namespace Agile.Services.Menus
             return _repository.Delete(predicate);
         }
 
-        public Menu GetByCondition(object predicate)
+        public SysMenu GetByCondition(object predicate)
         {
             return _repository.GetByCondition(predicate);
         }
 
-        public IEnumerable<Menu> GetList(object predicate = null, IList<ISort> sort = null)
+        public IEnumerable<SysMenu> GetList(object predicate = null, IList<ISort> sort = null)
         {
             return _repository.GetList(predicate, sort);
         }
 
-        public IEnumerable<Menu> GetPage(object predicate, IList<ISort> sort, int page, int resultsPerPage)
+        public IEnumerable<SysMenu> GetPage(object predicate, IList<ISort> sort, int page, int resultsPerPage)
         {
             return _repository.GetPage(predicate, sort, page, resultsPerPage);
         }
 
-        public void Insert(IEnumerable<Menu> entities)
+        public void Insert(IEnumerable<SysMenu> entities)
         {
             _repository.Insert(entities);
         }
 
-        public Menu Insert(Menu entity)
+        public SysMenu Insert(SysMenu entity)
         {
             return this._repository.Insert(entity);
         }
 
-        public bool Update(Menu entity)
+        public bool Update(SysMenu entity)
         {
             return _repository.Update(entity);
         }
 
-        public List<MenuViewModel> GetMenus()
+        public List<SysMenuViewModel> GetMenus()
         {
-            var menuViewModel = new List<MenuViewModel>();
-            var parentMenus = GetList(Predicates.Field<Menu>(f => f.ParentId, Operator.Eq, -1));
+            var menuViewModel = new List<SysMenuViewModel>();
+            var parentMenus = GetList(Predicates.Field<SysMenu>(f => f.ParentId, Operator.Eq, -1));
             if (parentMenus != null)
             {
                 foreach (var menu in parentMenus)
                 {
-                    MenuViewModel menuViewModelItem = new MenuViewModel();
+                    SysMenuViewModel menuViewModelItem = new SysMenuViewModel();
                     menuViewModelItem.Name = menu.Name;
                     menuViewModelItem.Icon = menu.Icon;
-                    menuViewModelItem.OpenUrl = menu.OpenUrl;
+                    menuViewModelItem.Url = menu.OpenUrl;
                     menuViewModel.Add(menuViewModelItem);
 
                     GetChildMenus(menu.Id, menuViewModelItem);
@@ -72,20 +72,20 @@ namespace Agile.Services.Menus
             return menuViewModel;
         }
 
-        private void GetChildMenus(int parentId, MenuViewModel menuViewModelItem)
+        private void GetChildMenus(int parentId, SysMenuViewModel menuViewModelItem)
         {
-            var childMenus = GetList(Predicates.Field<Menu>(f => f.ParentId, Operator.Eq, parentId));
+            var childMenus = GetList(Predicates.Field<SysMenu>(f => f.ParentId, Operator.Eq, parentId));
             if (childMenus != null)
             {
                 foreach (var childMenu in childMenus)
                 {
-                    MenuViewModel childMenuViewModelItem = new MenuViewModel();
+                    SysMenuViewModel childMenuViewModelItem = new SysMenuViewModel();
                     childMenuViewModelItem.Name = childMenu.Name;
                     childMenuViewModelItem.Icon = childMenu.Icon;
-                    childMenuViewModelItem.OpenUrl = childMenu.OpenUrl;
+                    childMenuViewModelItem.Url = childMenu.OpenUrl;
                     if (menuViewModelItem.SubMenus == null)
                     {
-                        menuViewModelItem.SubMenus = new List<MenuViewModel>();
+                        menuViewModelItem.SubMenus = new List<SysMenuViewModel>();
                     }
                     menuViewModelItem.SubMenus.Add(childMenuViewModelItem);
                     GetChildMenus(childMenu.Id, childMenuViewModelItem);
@@ -97,7 +97,7 @@ namespace Agile.Services.Menus
         {
             var selectListItems = new List<SelectListItem>();
             selectListItems.Add(new SelectListItem() { Value = "-1", Text = "请选择上级菜单" });
-            var menus = GetList(Predicates.Field<Menu>(f => f.ParentId, Operator.Eq, -1));
+            var menus = GetList(Predicates.Field<SysMenu>(f => f.ParentId, Operator.Eq, -1));
             if (menus != null)
             {
                 foreach (var menu in menus)
@@ -108,19 +108,21 @@ namespace Agile.Services.Menus
             return selectListItems;
         }
 
-        public List<MenuViewModel> GetTreeMenus()
+        public List<SysMenuViewModel> GetTreeMenus()
         {
-            var menuViewModel = new List<MenuViewModel>();
+            var menuViewModel = new List<SysMenuViewModel>();
             var parentMenus = GetList();
             if (parentMenus != null)
             {
                 foreach (var menu in parentMenus)
                 {
-                    MenuViewModel menuViewModelItem = new MenuViewModel();
+                    SysMenuViewModel menuViewModelItem = new SysMenuViewModel();
+                    menuViewModelItem.Id = menu.Id;
                     menuViewModelItem.Name = menu.Name;
                     menuViewModelItem.Icon = menu.Icon;
-                    menuViewModelItem.OpenUrl = menu.OpenUrl;
+                    menuViewModelItem.Url = menu.OpenUrl;
                     menuViewModelItem.ParentId = menu.ParentId;
+                    menuViewModelItem.Open = true;
                     menuViewModel.Add(menuViewModelItem);
                 }
             }
