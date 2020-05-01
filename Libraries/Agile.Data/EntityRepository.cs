@@ -171,8 +171,10 @@ namespace Agile.Data
             return Database.GetPage<TEntity>(predicate, sort, page, resultsPerPage, transaction, commandTimeout, buffered);
         }
 
-        public IEnumerable<TEntity> GetPage(object predicate, IList<ISort> sort, int page, int resultsPerPage, int? commandTimeout = null, bool buffered = true)
+        public IEnumerable<TEntity> GetPage(object predicate, IList<ISort> sort, int page, int resultsPerPage, out int total, int? commandTimeout = null, bool buffered = true)
         {
+            total = Count(predicate);
+
             return Database.GetPage<TEntity>(predicate, sort, page, resultsPerPage, commandTimeout, buffered);
         }
 

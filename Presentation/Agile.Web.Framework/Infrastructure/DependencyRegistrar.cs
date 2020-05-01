@@ -5,6 +5,7 @@
 using Agile.Core.Infrastructure;
 using Agile.Core.Infrastructure.DependencyManagement;
 using Agile.Data;
+using Agile.Services;
 using Agile.Services.Menus;
 //using Agile.Data;
 //using Agile.Services.Configuration;
@@ -41,6 +42,10 @@ namespace Agile.Web.Framework.Infrastructure
             builder.RegisterType<MenuParseService>().As<IMenuParseService>().SingleInstance();
 
             builder.RegisterType<MenuService>().As<IMenuService>().SingleInstance();
+
+            builder.RegisterType<SysDepartmentService>().As<ISysDepartmentService>().SingleInstance();
+
+            builder.RegisterType<SysRoleService>().As<ISysRoleService>().SingleInstance();
         }
     }
 }

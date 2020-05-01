@@ -1,0 +1,141 @@
+﻿@model Agile.Models.ViewModels.SysRoleViewModel
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_ListLayout.cshtml";
+}
+
+<div class="layui-inline">
+    <label class="layui-form-label">@Html.DisplayNameFor(s => s.RoleName)</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(s => s.RoleName, new { @class = "layui-input", @placeholder = $"请输入{Html.DisplayNameFor(s => s.RoleName)}" })
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/html" id="toolBar">
+        <button lay-event="add" class="layui-btn icon-btn"><i class="layui-icon">&#xe654;</i>添加</button>&nbsp;
+        <button lay-event="del" class="layui-btn layui-btn-danger icon-btn"><i class="layui-icon">&#xe640;</i>删除</button>
+    </script>
+    <script type="text/html" id="tableBar">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+    <script>
+        layui.use(['layer', 'form', 'table', 'util', 'admin', 'xmSelect'], function () {
+            var $ = layui.jquery;
+            var layer = layui.layer;
+            var form = layui.form;
+            var table = layui.table;
+            var util = layui.util;
+            var admin = layui.admin;
+            var xmSelect = layui.xmSelect;
+
+            table.render({
+                elem: '#agileTable',
+                url: '/admin/role/getdata',
+                page: true,
+                toolbar: '#toolBar',
+                cellMinWidth: 100,
+                defaultToolbar: ['filter'],
+                cols: [[
+                    { type: 'checkbox' },
+                    { type: 'numbers' },
+                    { field: 'roleName', title: '角色名称', sort: true },
+                    { field: 'remark', title: '备注', sort: true },
+                    { field: 'createTime', title: '创建时间', sort: true },
+                    { field: 'updateTime', title: '修改时间', sort: true },
+                    { title: '操作', toolbar: '#tableBar', align: 'center', minWidth: 200 }
+                ]]
+            });
+
+            /* 表格搜索 */
+            form.on('submit(agileTbSearch)', function (data) {
+                debugger;
+                table.reload('agileTable', { where: data.field, page: { curr: 1 } });
+                return false;
+            });
+
+            /* 表格工具条点击事件 */
+            table.on('tool(agileTable)', function (obj) {
+                debugger;
+                if (obj.event === 'edit') { // 修改
+                    showEditModel(obj.data);
+                } else if (obj.event === 'del') { // 删除
+                    var ids = { ids: obj.data.id };
+                    doDel(ids);
+                }
+            });
+
+            /* 表格头工具栏点击事件 */
+            table.on('toolbar(agileTable)', function (obj) {
+                //debugger;
+                if (obj.event === 'add') { // 添加
+                    showEditModel();
+                } else if (obj.event === 'del') { // 删除
+                    var checkRows = table.checkStatus('agileTable');
+                    if (checkRows.data.length === 0) {
+                        layer.msg('请选择要删除的数据', { icon: 2 });
+                        return;
+                    }
+                    var ids = checkRows.data.map(function (d) {
+                        return d.id;
+                    });
+                    doDel({ ids: ids });
+                }
+            });
+
+            /* 显示表单弹窗 */
+            function showEditModel(mData) {
+                layer.open({
+                    type: 2
+                    , title: (mData ? '修改' : '添加') + '角色'
+                    , content: '/admin/role/' + (mData ? 'edit' : "add") + "?id=" + (mData ? mData.id : 0)
+                    , maxmin: true
+                    , area: ['550px', '340px']
+                    , btn: ['确定', '取消']
+                    , yes: function (index, layero) {
+                        //点击确认触发 iframe 内容中的按钮提交
+                        var submit = layero.find('iframe').contents().find("#layuiadmin-app-form-submit");
+                        submit.click();
+                    }
+                });
+            }
+
+            /* 删除 */
+            function doDel(param) {
+                layer.confirm('确定要删除选中数据吗？', function (index) {
+                    layer.close(index);
+                    $.ajax({
+                        url: '/admin/role/delete',
+                        type: 'post',
+                        data: { ids: param.ids.toString() },
+                        beforeSend: function () {
+                            layer.msg('正在处理，请稍候。。。', { icon: 16, time: 60000, shade: [0.5, '#000', true] })
+                        },
+                        success: function (res) {
+                            debugger;
+                            console.log(res);
+                            if (res.code == 300) {
+                                window.location.href = res.data;
+                            }
+                            else if (res.code == 0) {
+                                layer.msg(res.msg, { icon: 1 });
+                                setTimeout(function () {
+                                    table.reload('agileTable'); //重载表格
+                                }, 1000);
+                            }
+                            else {
+                                layer.alert(res.msg, { icon: 2 });
+                                isSubmit = false;
+                            }
+                        },
+                        error: function (res) {
+                            layer.alert("请求发生未知错误！", { icon: 2 });
+                            isSubmit = false;
+                        }
+                    })
+                });
+            }
+        });
+    </script>
+}

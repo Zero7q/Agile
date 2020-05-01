@@ -1,0 +1,111 @@
+﻿@model Agile.Models.ViewModels.SysDepartmentViewModel
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_ListLayout.cshtml";
+}
+
+<div class="layui-inline">
+    <label class="layui-form-label">@Html.DisplayNameFor(s => s.DepartmentName)：</label>
+    <div class="layui-input-inline">
+        @Html.TextBoxFor(s => s.DepartmentName, new { @class = "layui-input", @placeholder = $"请输入{Html.DisplayNameFor(s => s.DepartmentName)}" })
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/html" id="toolBar">
+        <button lay-event="add" class="layui-btn layui-btn-sm icon-btn"><i class="layui-icon">&#xe654;</i>添加</button>&nbsp;
+        <button lay-event="del" class="layui-btn layui-btn-sm layui-btn-danger icon-btn"><i class="layui-icon">&#xe640;</i>删除</button>
+    </script>
+    <script type="text/html" id="tableBar">
+        <button lay-event="edit" class="layui-btn layui-btn-sm icon-btn"><i class="layui-icon">&#xe654;</i>修改</button>&nbsp;
+        <button lay-event="del" class="layui-btn layui-btn-sm layui-btn-danger icon-btn"><i class="layui-icon">&#xe640;</i>删除</button>
+    </script>
+    <script>
+        layui.use(['layer', 'form', 'table', 'util', 'admin', 'xmSelect'], function () {
+            var $ = layui.jquery;
+            var layer = layui.layer;
+            var form = layui.form;
+            var table = layui.table;
+            var util = layui.util;
+            var admin = layui.admin;
+            var xmSelect = layui.xmSelect;
+
+            table.render({
+                elem: '#agileTable',
+                url: '/admin/department/getdata',
+                page: true,
+                toolbar: '#toolBar',
+                cellMinWidth: 100,
+                cols: [[
+                    { type: 'checkbox' },
+                    { type: 'numbers' },
+                    { field: 'DepartmentName', title: '部门名称', sort: true },
+                    { title: '操作', toolbar: '#tableBar', align: 'center', minWidth: 200 }
+                ]]
+            });
+
+            /* 表格工具条点击事件 */
+            table.on('tool(agileTable)', function (obj) {
+                debugger;
+            });
+
+            /* 表格头工具栏点击事件 */
+            table.on('toolbar(agileTable)', function (obj) {
+                debugger;
+                if (obj.event === 'add') { // 添加
+                    showEditModel();
+                } else if (obj.event === 'del') { // 删除
+                    var checkRows = table.checkStatus('agileTable');
+                    if (checkRows.data.length === 0) {
+                        layer.msg('请选择要删除的数据', { icon: 2 });
+                        return;
+                    }
+                    var ids = checkRows.data.map(function (d) {
+                        return d.userId;
+                    });
+                    doDel({ ids: ids });
+                }
+            });
+
+            /* 显示表单弹窗 */
+            function showEditModel(mData) {
+                layer.open({
+                    type: 2
+                    , title: '添加文章'
+                    , content: '/admin/department/add'
+                    , maxmin: true
+                    , area: ['550px', '550px']
+                    , btn: ['确定', '取消']
+                    , yes: function (index, layero) {
+                        //点击确认触发 iframe 内容中的按钮提交
+                        var submit = layero.find('iframe').contents().find("#layuiadmin-app-form-submit");
+                        submit.click();
+                    }
+                });
+            }
+
+            /* 删除 */
+            function doDel(obj) {
+                layer.confirm('确定要删除选中数据吗？', {
+                    skin: 'layui-layer-admin',
+                    shade: .1
+                }, function (i) {
+                    layer.close(i);
+                    var loadIndex = layer.load(2);
+                    $.get('../../json/ok.json', {
+                        id: obj.data ? obj.data.userId : '',
+                        ids: obj.ids ? obj.ids.join(',') : ''
+                    }, function (res) {
+                        layer.close(loadIndex);
+                        if (res.code === 200) {
+                            layer.msg(res.msg, { icon: 1 });
+                            insTb.reload({ page: { curr: 1 } });
+                        } else {
+                            layer.msg(res.msg, { icon: 2 });
+                        }
+                    }, 'json');
+                });
+            }
+        });
+    </script>
+}

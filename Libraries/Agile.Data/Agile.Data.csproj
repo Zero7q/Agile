@@ -30,13 +30,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Dapper\DapperExtensions\DapperExtensions.csproj" />
     <ProjectReference Include="..\Agile.Core\Agile.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="DapperExtensions">
-      <HintPath>..\..\..\DapperExtensions\DapperExtensions\bin\Release\netcoreapp3.1\DapperExtensions.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

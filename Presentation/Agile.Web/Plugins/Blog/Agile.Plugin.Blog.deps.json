@@ -1815,6 +1815,7 @@
           "Agile.Core": "1.0.0",
           "Dapper": "2.0.35",
           "Dapper.Contrib": "2.0.35",
+          "DapperExtensions": "1.0.0",
           "FluentMigrator.Runner.Core": "3.2.6",
           "MySql.Data": "8.0.19",
           "Newtonsoft.Json": "12.0.3",
@@ -1866,6 +1867,18 @@
           "Agile.Web.Framework.dll": {}
         }
       },
+      "DapperExtensions/1.0.0": {
+        "dependencies": {
+          "Dapper": "2.0.35",
+          "Dapper.Contrib": "2.0.35"
+        },
+        "runtime": {
+          "DapperExtensions.dll": {}
+        },
+        "compile": {
+          "DapperExtensions.dll": {}
+        }
+      },
       "Plugin.Blog.Service/1.0.0.0": {
         "runtime": {
           "Plugin.Blog.Service.dll": {
@@ -1875,14 +1888,6 @@
         },
         "compile": {
           "Plugin.Blog.Service.dll": {}
-        }
-      },
-      "DapperExtensions/1.0.0.0": {
-        "runtime": {
-          "DapperExtensions.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
-          }
         }
       },
       "Microsoft.AspNetCore.Antiforgery/3.1.0.0": {
@@ -4591,12 +4596,12 @@
       "serviceable": false,
       "sha512": ""
     },
-    "Plugin.Blog.Service/1.0.0.0": {
-      "type": "reference",
+    "DapperExtensions/1.0.0": {
+      "type": "project",
       "serviceable": false,
       "sha512": ""
     },
-    "DapperExtensions/1.0.0.0": {
+    "Plugin.Blog.Service/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""

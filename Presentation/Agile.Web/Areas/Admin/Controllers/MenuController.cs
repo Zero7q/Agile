@@ -4,9 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Agile.Core.Domain;
-using Agile.Models.Menus.Infrastructure;
-using Agile.Models.Menus.ViewModel;
-using Agile.Models.Permissions.Infrastructure;
+using Agile.Models.Infrastructure;
+using Agile.Models.ViewModels;
 using Agile.Services.Menus;
 using Agile.Web.Framework.Controllers;
 using DapperExtensions;
@@ -17,7 +16,7 @@ namespace Agile.Web.Areas.Admin.Controllers
     /// <summary>
     /// 菜单控制器
     /// </summary>
-    [MenuAttribute(MenuType.Display, "系统管理|菜单管理", "/admin/menu/list")]
+    [MenuAttribute(MenuType.Page, "系统管理|菜单管理", "/admin/menu/list")]
     public class MenuController : BasePluginController
     {
         private readonly IMenuService _menuService;
@@ -44,7 +43,7 @@ namespace Agile.Web.Areas.Admin.Controllers
         }
 
         /// <summary>
-        /// 获取菜单列表数据
+        /// 获取列表数据
         /// </summary>
         /// <returns></returns>
         [PermissionAttribute("view")]
@@ -56,7 +55,7 @@ namespace Agile.Web.Areas.Admin.Controllers
         }
 
         /// <summary>
-        /// 获取菜单侧边栏数据
+        /// 获取菜单侧边栏列表数据
         /// </summary>
         /// <returns></returns>
         [PermissionAttribute("view")]

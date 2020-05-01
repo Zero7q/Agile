@@ -1,6 +1,7 @@
-﻿using Agile.Core.Infrastructure;
-using Agile.Models.Menus.Domain;
-using Agile.Models.Menus.Infrastructure;
+﻿using Agile.Core.Domain;
+using Agile.Core.Infrastructure;
+using Agile.Models.Domain;
+using Agile.Models.Infrastructure;
 using DapperExtensions;
 using System;
 using System.Collections.Generic;
@@ -57,14 +58,16 @@ namespace Agile.Services.Menus
                                         }
                                         else
                                         {
+                                            string url = isLastNode == true ? menuAttribute.Url : "javascript:;";
                                             var menuItem = new SysMenu();
                                             menuItem.ParentId = parentMenu == null ? -1 : parentMenu.Id;
                                             menuItem.Node = node;
                                             menuItem.Name = menu;
                                             menuItem.Icon = menuAttribute.Icon;
-                                            menuItem.OpenUrl = isLastNode == true ? menuAttribute.OpenUrl : "javascript:;";
+                                            menuItem.Type = menuAttribute.Type;
+                                            menuItem.Url = url;
                                             menuItem.CreateTime = DateTime.Now;
-                                            menuItem.IsEnabled = Core.Domain.EnabledType.True;
+                                            menuItem.IsEnabled = EnabledType.True;
                                             _menuService.Insert(menuItem);
                                             parentMenu = menuItem;
                                         }

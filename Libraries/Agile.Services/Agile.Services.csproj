@@ -28,12 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="DapperExtensions">
-      <HintPath>..\..\..\DapperExtensions\DapperExtensions\bin\Release\netcoreapp3.1\DapperExtensions.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Permissions\" />
     <Folder Include="Plugins\" />
   </ItemGroup>

@@ -1,5 +1,5 @@
-﻿using Agile.Models.Menus.Domain;
-using Agile.Models.Menus.ViewModel;
+﻿using Agile.Models.Domain;
+using Agile.Models.ViewModels;
 using DapperExtensions;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -22,7 +22,7 @@ namespace Agile.Services.Menus
 
         IEnumerable<SysMenu> GetList(object predicate = null, IList<ISort> sort = null);
 
-        IEnumerable<SysMenu> GetPage(object predicate, IList<ISort> sort, int page, int resultsPerPage);
+        IEnumerable<SysMenu> GetPage(object predicate, IList<ISort> sort, int page, int resultsPerPage, out int total);
 
         List<SysMenuViewModel> GetMenus();
 

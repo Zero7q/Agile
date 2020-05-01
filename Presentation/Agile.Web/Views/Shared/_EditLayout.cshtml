@@ -24,31 +24,37 @@
     <div class="layui-fluid">
         <div class="layui-card">
             <div class="layui-card-body">
-                <form id="authoritiesEditForm" lay-filter="authoritiesEditForm" class="layui-form model-form" style="padding-right: 20px;">
-                    <input name="authorityId" type="hidden" />
+                <div class="layui-form" lay-filter="layuiadmin-app-form-list" id="layuiadmin-app-form-list" style="padding: 20px 30px 0 0;">
+                    @*@for (int j = 0; j < 3; j++)
+                        {
+                            <div class="layui-row">
+                                @for (int i = 0; i < 3; i++)
+                                {
+                                    <div class="layui-col-sm4">
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label">文章标题</label>
+                                            <div class="layui-input-inline">
+                                                <input type="text" name="title" lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }*@
                     @RenderBody()
-                    <div class="layui-form-item text-right">
-                        <button class="layui-btn" lay-filter="authoritiesEditSubmit" lay-submit>保存</button>
-                        <button class="layui-btn layui-btn-primary" type="button" ew-event="closeDialog">取消</button>
+                    <div class="layui-form-item layui-hide">
+                        <input type="button" lay-submit lay-filter="layuiadmin-app-form-submit" id="layuiadmin-app-form-submit" value="确认添加">
+                        <input type="button" lay-submit lay-filter="layuiadmin-app-form-edit" id="layuiadmin-app-form-edit" value="确认编辑">
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
+
+
     <!-- js部分 -->
     <script type="text/javascript" src="~/agile/assets/libs/layui/layui.js"></script>
     <script type="text/javascript" src="~/agile/assets/js/common.js?v=317"></script>
-    <script>
-        layui.use(['layer', 'form', 'admin', 'treeTable', 'util', 'xmSelect'], function () {
-            var $ = layui.jquery;
-            var layer = layui.layer;
-            var form = layui.form;
-            var admin = layui.admin;
-            var treeTable = layui.treeTable;
-            var util = layui.util;
-            var xmSelect = layui.xmSelect;
-            var tbDataList = [];
-        });
-    </script>
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

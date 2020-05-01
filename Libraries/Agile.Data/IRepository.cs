@@ -37,7 +37,7 @@ namespace Agile.Data
         IEnumerable<TEntity> GetList(object predicate, IList<ISort> sort, IDbTransaction transaction, int? commandTimeout = null, bool buffered = true);
         IEnumerable<TEntity> GetList(object predicate = null, IList<ISort> sort = null, int? commandTimeout = null, bool buffered = true);
         IEnumerable<TEntity> GetPage(object predicate, IList<ISort> sort, int page, int resultsPerPage, IDbTransaction transaction, int? commandTimeout = null, bool buffered = true);
-        IEnumerable<TEntity> GetPage(object predicate, IList<ISort> sort, int page, int resultsPerPage, int? commandTimeout = null, bool buffered = true);
+        IEnumerable<TEntity> GetPage(object predicate, IList<ISort> sort, int page, int resultsPerPage, out int total, int? commandTimeout = null, bool buffered = true);
         //IEnumerable<TEntity> GetSet(object predicate, IList<ISort> sort, int firstResult, int maxResults, IDbTransaction transaction, int? commandTimeout, bool buffered);
         //IEnumerable<TEntity> GetSet(object predicate, IList<ISort> sort, int firstResult, int maxResults, int? commandTimeout, bool buffered);
         int Count(object predicate, IDbTransaction transaction, int? commandTimeout = null);

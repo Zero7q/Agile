@@ -6,7 +6,7 @@ namespace Agile.Core.Domain
 {
     public enum EnabledType
     {
-        Flase = 0,
-        True = 1
+        True = 0,
+        Flase = 1
     }
 }

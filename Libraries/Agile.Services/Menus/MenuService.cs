@@ -1,6 +1,6 @@
 ﻿using Agile.Data;
-using Agile.Models.Menus.Domain;
-using Agile.Models.Menus.ViewModel;
+using Agile.Models.Domain;
+using Agile.Models.ViewModels;
 using DapperExtensions;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -32,9 +32,9 @@ namespace Agile.Services.Menus
             return _repository.GetList(predicate, sort);
         }
 
-        public IEnumerable<SysMenu> GetPage(object predicate, IList<ISort> sort, int page, int resultsPerPage)
+        public IEnumerable<SysMenu> GetPage(object predicate, IList<ISort> sort, int page, int resultsPerPage, out int total)
         {
-            return _repository.GetPage(predicate, sort, page, resultsPerPage);
+            return _repository.GetPage(predicate, sort, page, resultsPerPage, out total);
         }
 
         public void Insert(IEnumerable<SysMenu> entities)
@@ -63,7 +63,7 @@ namespace Agile.Services.Menus
                     SysMenuViewModel menuViewModelItem = new SysMenuViewModel();
                     menuViewModelItem.Name = menu.Name;
                     menuViewModelItem.Icon = menu.Icon;
-                    menuViewModelItem.Url = menu.OpenUrl;
+                    menuViewModelItem.Url = menu.Url;
                     menuViewModel.Add(menuViewModelItem);
 
                     GetChildMenus(menu.Id, menuViewModelItem);
@@ -82,7 +82,7 @@ namespace Agile.Services.Menus
                     SysMenuViewModel childMenuViewModelItem = new SysMenuViewModel();
                     childMenuViewModelItem.Name = childMenu.Name;
                     childMenuViewModelItem.Icon = childMenu.Icon;
-                    childMenuViewModelItem.Url = childMenu.OpenUrl;
+                    childMenuViewModelItem.Url = childMenu.Url;
                     if (menuViewModelItem.SubMenus == null)
                     {
                         menuViewModelItem.SubMenus = new List<SysMenuViewModel>();
@@ -120,7 +120,7 @@ namespace Agile.Services.Menus
                     menuViewModelItem.Id = menu.Id;
                     menuViewModelItem.Name = menu.Name;
                     menuViewModelItem.Icon = menu.Icon;
-                    menuViewModelItem.Url = menu.OpenUrl;
+                    menuViewModelItem.Url = menu.Url;
                     menuViewModelItem.ParentId = menu.ParentId;
                     menuViewModelItem.Open = true;
                     menuViewModel.Add(menuViewModelItem);

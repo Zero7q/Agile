@@ -1,0 +1,89 @@
+﻿using Agile.Core;
+using Agile.Core.Domain;
+using Agile.Models;
+using DapperExtensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Agile.Web.Framework.Controllers
+{
+    public abstract class BaseTemplateAbstractController<T, K> : BasePluginController
+        where T : BaseEntity, new()
+        where K : BaseViewModel, new()
+    {
+        public virtual K OnListLoading()
+        {
+            return new K();
+        }
+
+        public virtual K OnAddLoading()
+        {
+            return new K();
+        }
+
+        public virtual string OnAddLoaded(K model)
+        {
+            return string.Empty;
+        }
+
+        public virtual string OnAdding(K model)
+        {
+            return string.Empty;
+        }
+
+        public virtual void OnAdded(T domain)
+        {
+
+        }
+
+        public virtual void OnEditloading(K model)
+        {
+
+        }
+        public virtual void OnEdited(T model)
+        {
+
+        }
+
+        public virtual IPredicateGroup ListWhereFilter(K model)
+        {
+            IPredicateGroup predicate = new PredicateGroup { Operator = GroupOperator.And, Predicates = new List<IPredicate>() };
+            predicate.Predicates.Add(Predicates.Field<T>(f => f.IsEnabled, Operator.Eq, EnabledType.True));
+            return predicate;
+        }
+
+        public virtual IList<ISort> ListSortFilter(K model)
+        {
+            IList<ISort> sort = new List<ISort>();
+            sort.Add(new Sort { PropertyName = "id", Ascending = false });
+            return sort;
+        }
+
+        public virtual T ParseToDomain(K model)
+        {
+            return (T)Parse(model, new T());
+        }
+
+        public virtual K ParseToModel(T info)
+        {
+            return (K)Parse(info, new K());
+        }
+
+        public virtual object Parse(object souce, object target)
+        {
+            var souceProperties = souce.GetType().GetProperties();
+            var targetProperties = target.GetType().GetProperties();
+            foreach (var sourcePropertyInfo in souceProperties)
+            {
+                var targetPropertyInfo = targetProperties.ToList().FirstOrDefault(s => s.Name.Equals(sourcePropertyInfo.Name));
+                if (targetPropertyInfo != null && targetPropertyInfo.PropertyType == sourcePropertyInfo.PropertyType)
+                {
+                    targetPropertyInfo.SetValue(target, sourcePropertyInfo.GetValue(souce));
+                }
+            }
+            return target;
+        }
+    }
+}

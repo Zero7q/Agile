@@ -19,5 +19,7 @@ namespace Agile.Core
         public int Sort { get; set; }
 
         public EnabledType IsEnabled { get; set; }
+
+        public virtual void Parse<K>(K model) { }
     }
 }
