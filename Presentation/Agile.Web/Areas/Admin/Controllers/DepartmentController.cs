@@ -54,7 +54,7 @@ namespace Agile.Web.Areas.Admin.Controllers
 
             var result = _sysDepartmentService.GetPage(predicate, sort, page, resultsPerPage, out total);
 
-            return Success(result, total);
+            return SuccessJson(result, total);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace Agile.Web.Areas.Admin.Controllers
         {
             var result = _sysDepartmentService.GetTreeData();
 
-            return Success(result);
+            return SuccessJson(result);
         }
 
         /// <summary>
@@ -95,12 +95,12 @@ namespace Agile.Web.Areas.Admin.Controllers
             }
             if (string.IsNullOrWhiteSpace(sysDepartmentViewModel.DepartmentName))
             {
-                return Error("部门名称不能为空！");
+                return ErrorJson("部门名称不能为空！");
             }
 
             _sysDepartmentService.Insert(new SysDepartment() { DepartmentName = sysDepartmentViewModel.DepartmentName, CreateTime = DateTime.Now });
 
-            return Success();
+            return SuccessJson();
         }
     }
 }

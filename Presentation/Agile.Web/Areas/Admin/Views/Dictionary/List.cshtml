@@ -1,0 +1,339 @@
+﻿@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>字典管理</title>
+    <link rel="stylesheet" href="~/agile/assets/libs/layui/css/layui.css" />
+    <link rel="stylesheet" href="~/agile/assets/module/admin.css?v=317" />
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        #dictTable + .layui-table-view .layui-table-tool-temp {
+            padding-right: 0;
+        }
+
+        #dictTable + .layui-table-view .layui-table-body tbody > tr td {
+            cursor: pointer;
+        }
+
+        #dictTable + .layui-table-view .layui-table-body tbody > tr.layui-table-click {
+            background-color: #fff3e0;
+        }
+
+            #dictTable + .layui-table-view .layui-table-body tbody > tr.layui-table-click td:last-child > div:before {
+                position: absolute;
+                right: 6px;
+                content: "\e602";
+                font-size: 12px;
+                font-style: normal;
+                font-family: layui-icon !important;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+    </style>
+</head>
+<body>
+    <!-- 页面加载loading -->
+    <div class="page-loading">
+        <div class="ball-loader">
+            <span></span><span></span><span></span><span></span>
+        </div>
+    </div>
+    <!-- 正文开始 -->
+    <div class="layui-fluid" style="padding-bottom: 0;">
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-md3">
+                <div class="layui-card">
+                    <div class="layui-card-body" style="padding: 10px;">
+                        <!-- 表格工具栏1 -->
+                        <form class="layui-form toolbar">
+                            <div class="layui-form-item">
+                                <div class="layui-inline" style="max-width: 160px;">
+                                    <input name="DictionaryName" class="layui-input" placeholder="输入字典名称" />
+                                </div>
+                                <div class="layui-inline">
+                                    <button class="layui-btn icon-btn" lay-filter="agileTbSearch" lay-submit>
+                                        <i class="layui-icon">&#xe615;</i>搜索
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- 数据表格1 -->
+                        <table id="agileTable" lay-filter="agileTable"></table>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md9">
+                <div class="layui-card">
+                    <div class="layui-card-body" style="padding: 10px;">
+                        <!-- 表格工具栏2 -->
+                        <form class="layui-form toolbar">
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">字典项名称:</label>
+                                    <div class="layui-input-inline">
+                                        <input name="dictDataName" class="layui-input" placeholder="输入字典项名称" />
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">字典项代码:</label>
+                                    <div class="layui-input-inline">
+                                        <input name="dictDataCode" class="layui-input" placeholder="输入字典项代码" />
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    &emsp;
+                                    <button class="layui-btn icon-btn" lay-filter="dictDataTbSearch" lay-submit>
+                                        <i class="layui-icon">&#xe615;</i>搜索
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- 数据表格2 -->
+                        <table id="dictDataTable" lay-filter="dictDataTable"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 表格操作列 -->
+    <script type="text/html" id="dictDataTbBar">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+    <!-- js部分 -->
+    <script type="text/javascript" src="~/agile/assets/libs/layui/layui.js"></script>
+    <script type="text/javascript" src="~/agile/assets/js/common.js?v=317"></script>
+    <script>
+    layui.use(['layer', 'form', 'table', 'util', 'admin'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var table = layui.table;
+        var util = layui.util;
+        var admin = layui.admin;
+        var selObj;  // 左表选中数据
+
+        /* 渲染表格 */
+        table.render({
+            elem: '#agileTable',
+            url: '/admin/dictionary/getdata',
+            height: 'full-100',
+            toolbar: ['<p>',
+                '<button lay-event="add" class="layui-btn layui-btn-sm icon-btn"><i class="layui-icon">&#xe654;</i>添加</button>&nbsp;',
+                '<button lay-event="edit" class="layui-btn layui-btn-sm layui-btn-warm icon-btn"><i class="layui-icon">&#xe642;</i>修改</button>&nbsp;',
+                '<button lay-event="del" class="layui-btn layui-btn-sm layui-btn-danger icon-btn"><i class="layui-icon">&#xe640;</i>删除</button>',
+                '</p>'].join(''),
+            defaultToolbar: [],
+            cols: [[
+                {type: 'numbers'},
+                {field: 'dictionaryName', title: '字典名称'},
+                {field: 'dictionaryCode', title: '字典代码'}
+            ]],
+            done: function (res, curr, count) {
+                $('#agileTable+.layui-table-view .layui-table-body tbody>tr:first').trigger('click');
+            }
+        });
+
+        /* 表格搜索 */
+        form.on('submit(agileTbSearch)', function (data) {
+            table.reload('agileTable', { where: data.field });
+            return false;
+        });
+
+        /* 表格头工具栏点击事件 */
+        table.on('toolbar(agileTable)', function (obj) {
+            debugger;
+            if (obj.event === 'add') { // 添加
+                showEditModel();
+            } else if (obj.event === 'edit') { // 修改
+                showEditModel(selObj.data, selObj);
+            } else if (obj.event === 'del') { // 删除
+                var ids = { ids: selObj.data.id };
+                doDelete(ids);
+            }
+        });
+
+        /* 监听行单击事件 */
+        table.on('row(agileTable)', function (obj) {
+            debugger;
+            selObj = obj;
+            obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click');
+            insTb2.reload({where: {dictionaryid: obj.data.id}, page: {curr: 1}, url: '/admin/dictionarydetail/getdata'});
+        });
+
+        /* 显示表单弹窗 */
+        function showEditModel(mData, obj) {
+            layer.open({
+                type: 2
+                , title: (mData ? '修改' : '添加') + '字典'
+                , content: (mData ? '@AgileFormatUrl("edit")' : "@AgileFormatUrl("add")") + "?id=" + (mData ? mData.id : 0)
+                , maxmin: true
+                , area: ['550px', '280px']
+                , btn: ['确定', '取消']
+                , yes: function (index, layero) {
+                    //点击确认触发 iframe 内容中的按钮提交
+                    var submit = layero.find('iframe').contents().find("#layuiadmin-app-form-submit");
+                    submit.click();
+                }
+            });
+        }
+
+        /* 删除 */
+        function doDelete(param) {
+            layer.confirm('确定要删除选中数据吗？', function (index) {
+                layer.close(index);
+                $.ajax({
+                    url: '@AgileFormatUrl("delete")',
+                    type: 'post',
+                    data: { ids: param.ids.toString() },
+                    beforeSend: function () {
+                        layer.msg('正在处理，请稍候。。。', { icon: 16, time: 60000, shade: [0.5, '#000', true] })
+                    },
+                    success: function (res) {
+                        debugger;
+                        console.log(res);
+                        if (res.code == 300) {
+                            window.location.href = res.data;
+                        }
+                        else if (res.code == 0) {
+                            layer.msg(res.msg, { icon: 1 });
+                            setTimeout(function () {
+                                table.reload('agileTable'); //重载表格
+                                table.reload('dictDataTable'); //重载表格
+                            }, 1000);
+                        }
+                        else {
+                            layer.alert(res.msg, { icon: 2 });
+                            isSubmit = false;
+                        }
+                    },
+                    error: function (res) {
+                        layer.alert("请求发生未知错误！", { icon: 2 });
+                        isSubmit = false;
+                    }
+                })
+            });
+        }
+
+        /* 渲染表格2 */
+        var insTb2 = table.render({
+            elem: '#dictDataTable',
+            data: [],
+            height: 'full-100',
+            page: true,
+            toolbar: ['<p>',
+                '<button lay-event="add" class="layui-btn layui-btn-sm icon-btn"><i class="layui-icon">&#xe654;</i>添加</button>&nbsp;',
+                '<button lay-event="del" class="layui-btn layui-btn-sm layui-btn-danger icon-btn"><i class="layui-icon">&#xe640;</i>删除</button>&nbsp;',
+                '</p>'].join(''),
+            cellMinWidth: 100,
+            cols: [[
+                {type: 'checkbox'},
+                {type: 'numbers'},
+                {field: 'dictionaryKey', title: '字典项名称', sort: true},
+                {field: 'dictionaryValue', title: '字典项代码', sort: true},
+                {title: '操作', toolbar: '#dictDataTbBar', align: 'center', width: 120, minWidth: 120}
+            ]]
+        });
+
+        /* 表格2搜索 */
+        form.on('submit(dictDataTbSearch)', function (data) {
+            insTb2.reload({where: data.field, page: {curr: 1}});
+            return false;
+        });
+
+        /* 表格2工具条点击事件 */
+        table.on('tool(dictDataTable)', function (obj) {
+            if (obj.event === 'edit') { // 修改
+                showEditModel2(obj.data);
+            } else if (obj.event === 'del') { // 删除
+                var ids = { ids: obj.data.id };
+                doDelete2(ids);
+            }
+        });
+
+        /* 表格2头工具栏点击事件 */
+        table.on('toolbar(dictDataTable)', function (obj) {
+            debugger;
+            if (obj.event === 'add') { // 添加
+                showEditModel2();
+            } else if (obj.event === 'del') { // 删除
+                var checkRows = table.checkStatus('dictDataTable');
+                if (checkRows.data.length === 0) {
+                    layer.msg('请选择要删除的数据', {icon: 2});
+                    return;
+                }
+                var ids = checkRows.data.map(function (d) {
+                    return d.id;
+                });
+                doDelete2({ids: ids});
+            }
+        });
+
+        /* 显示表单弹窗2 */
+        function showEditModel2(mData) {
+            debugger;
+             layer.open({
+                type: 2
+                , title: (mData ? '修改' : '添加') + '字典数据'
+                 , content: (mData ? '/@AgileArea/dictionarydetail/edit' : "/@AgileArea/dictionarydetail/add") + "?id=" + (mData ? mData.id : 0) + "&dictionaryid=" + selObj.data.id
+                , maxmin: true
+                , area: ['550px', '280px']
+                , btn: ['确定', '取消']
+                , yes: function (index, layero) {
+                    //点击确认触发 iframe 内容中的按钮提交
+                    var submit = layero.find('iframe').contents().find("#layuiadmin-app-form-submit");
+                    submit.click();
+                }
+            });
+        }
+
+        /* 删除2 */
+        function doDelete2(param) {
+            layer.confirm('确定要删除选中数据吗？', function (index) {
+                    layer.close(index);
+                    $.ajax({
+                        url: '/@AgileArea/dictionarydetail/delete',
+                        type: 'post',
+                        data: { ids: param.ids.toString() },
+                        beforeSend: function () {
+                            layer.msg('正在处理，请稍候。。。', { icon: 16, time: 60000, shade: [0.5, '#000', true] })
+                        },
+                        success: function (res) {
+                            debugger;
+                            console.log(res);
+                            if (res.code == 300) {
+                                window.location.href = res.data;
+                            }
+                            else if (res.code == 0) {
+                                layer.msg(res.msg, { icon: 1 });
+                                setTimeout(function () {
+                                    table.reload('dictDataTable'); //重载表格
+                                }, 1000);
+                            }
+                            else {
+                                layer.alert(res.msg, { icon: 2 });
+                                isSubmit = false;
+                            }
+                        },
+                        error: function (res) {
+                            layer.alert("请求发生未知错误！", { icon: 2 });
+                            isSubmit = false;
+                        }
+                    })
+                });
+        }
+
+    });
+    </script>
+</body>
+</html>

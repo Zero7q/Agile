@@ -1,0 +1,24 @@
+﻿@model Agile.Models.ViewModels.SysDictionaryViewModel
+@{
+    ViewData["Title"] = "Add";
+    Layout = "~/Views/Shared/_EditLayout.cshtml";
+}
+@Html.HiddenFor(s => s.Id)
+@Html.HiddenFor(s => s.CreateTime)
+@Html.HiddenFor(s => s.UpdateTime)
+<div class="layui-row">
+    <div class="layui-col-sm12">
+        <div class="layui-form-item">
+            <label class="layui-form-label">@Html.DisplayNameFor(s => s.DictionaryName)：</label>
+            <div class="layui-input-block">
+                @Html.TextBoxFor(s => s.DictionaryName, new { @class = "layui-input", @placeholder = $"请输入{Html.DisplayNameFor(s => s.DictionaryName)}" })
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">@Html.DisplayNameFor(s => s.DictionaryCode)：</label>
+            <div class="layui-input-block">
+                @Html.TextBoxFor(s => s.DictionaryCode, new { @class = "layui-input", @placeholder = $"请输入{Html.DisplayNameFor(s => s.DictionaryCode)}" })
+            </div>
+        </div>
+    </div>
+</div>

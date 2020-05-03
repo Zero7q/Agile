@@ -1,14 +1,16 @@
 ﻿using Agile.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Agile.Web.Framework.Controllers
 {
-    public abstract class BaseController : Controller
+    public class BaseController : Controller
     {
-        public IActionResult Success(object datas, int total)
+        public IActionResult SuccessJson(object datas, int total)
         {
             var result = new
             {
@@ -20,7 +22,7 @@ namespace Agile.Web.Framework.Controllers
             return Json(result);
         }
 
-        public IActionResult Success(object datas)
+        public IActionResult SuccessJson(object datas)
         {
             var result = new
             {
@@ -31,7 +33,7 @@ namespace Agile.Web.Framework.Controllers
             return Json(result);
         }
 
-        public IActionResult Success(string message = "成功")
+        public IActionResult SuccessJson(string message = "成功")
         {
             var result = new
             {
@@ -41,7 +43,7 @@ namespace Agile.Web.Framework.Controllers
             return Json(result);
         }
 
-        public IActionResult Error(string message = "失败")
+        public IActionResult ErrorJson(string message = "失败")
         {
             var result = new
             {

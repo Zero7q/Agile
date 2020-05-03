@@ -20,11 +20,20 @@ namespace Agile.Web.Areas.Admin.Controllers
     [Menu(MenuType.Page, "系统管理|角色管理", "/admin/role/list")]
     public class RoleController : BaseTemplateController<SysRole, SysRoleViewModel>
     {
-        private readonly ISysRoleService _sysRoleService;
-
-        public RoleController(ISysRoleService sysRoleService, IRepository<SysRole> repository) : base(repository)
+        public RoleController(IRepository<SysRole> repository) : base(repository)
         {
-            _sysRoleService = sysRoleService;
+
+        }
+
+        public override IPredicateGroup ListWhereFilter(SysRoleViewModel model)
+        {
+            var predicate = new PredicateGroup { Operator = GroupOperator.And, Predicates = new List<IPredicate>() };
+            predicate.Predicates.Add(Predicates.Field<SysRole>(f => f.IsEnabled, Operator.Eq, EnabledType.True));
+            if (!string.IsNullOrWhiteSpace(model.RoleName))
+            {
+                predicate.Predicates.Add(Predicates.Field<SysRole>(f => f.RoleName, Operator.Like, $"%{model.RoleName}%"));
+            }
+            return predicate;
         }
     }
 }

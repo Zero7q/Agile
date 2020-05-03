@@ -55,6 +55,56 @@
     <!-- js部分 -->
     <script type="text/javascript" src="~/agile/assets/libs/layui/layui.js"></script>
     <script type="text/javascript" src="~/agile/assets/js/common.js?v=317"></script>
-    @RenderSection("Scripts", required: false)
+    @if (IsSectionDefined("Scripts"))
+    {
+        @RenderSection("Scripts", required: false)
+    }
+    else
+    {
+        <script>
+        layui.use(['layer', 'form'], function () {
+            var $ = layui.jquery;
+            var layer = layui.layer;
+            var form = layui.form;
+
+            //监听提交
+            form.on('submit(layuiadmin-app-form-submit)', function (data) {
+                var field = data.field; //获取提交的字段
+                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                debugger;
+                $.ajax({
+                    url: '@AgileFullUrl',
+                    type: 'post',
+                    data: field,
+                    beforeSend: function () {
+                        layer.msg('正在处理，请稍候。。。', { icon: 16, time: 60000, shade: [0.5, '#000', true] })
+                    },
+                    success: function (res) {
+                        debugger;
+                        console.log(res);
+                        if (res.code == 300) {
+                            window.location.href = res.data;
+                        }
+                        else if (res.code == 0) {
+                            layer.msg(res.msg, { icon: 1 });
+                            setTimeout(function () {
+                                parent.layui.table.reload('agileTable'); //重载表格
+                                parent.layer.close(index); //再执行关闭
+                            }, 1000);
+                        }
+                        else {
+                            layer.alert(res.msg, { icon: 2 });
+                            isSubmit = false;
+                        }
+                    },
+                    error: function (res) {
+                        layer.alert("请求发生未知错误！", { icon: 2 });
+                        isSubmit = false;
+                    }
+                })
+            });
+        });
+        </script>
+    }
 </body>
 </html>

@@ -21,18 +21,15 @@
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     </script>
     <script>
-        layui.use(['layer', 'form', 'table', 'util', 'admin', 'xmSelect'], function () {
+        layui.use(['layer', 'form', 'table'], function () {
             var $ = layui.jquery;
             var layer = layui.layer;
             var form = layui.form;
             var table = layui.table;
-            var util = layui.util;
-            var admin = layui.admin;
-            var xmSelect = layui.xmSelect;
 
             table.render({
                 elem: '#agileTable',
-                url: '/admin/role/getdata',
+                url: '@AgileFormatUrl("getdata")',
                 page: true,
                 toolbar: '#toolBar',
                 cellMinWidth: 100,
@@ -62,7 +59,7 @@
                     showEditModel(obj.data);
                 } else if (obj.event === 'del') { // 删除
                     var ids = { ids: obj.data.id };
-                    doDel(ids);
+                    doDelete(ids);
                 }
             });
 
@@ -80,7 +77,7 @@
                     var ids = checkRows.data.map(function (d) {
                         return d.id;
                     });
-                    doDel({ ids: ids });
+                    doDelete({ ids: ids });
                 }
             });
 
@@ -89,7 +86,7 @@
                 layer.open({
                     type: 2
                     , title: (mData ? '修改' : '添加') + '角色'
-                    , content: '/admin/role/' + (mData ? 'edit' : "add") + "?id=" + (mData ? mData.id : 0)
+                    , content: (mData ? '@AgileFormatUrl("edit")' : "@AgileFormatUrl("add")") + "?id=" + (mData ? mData.id : 0)
                     , maxmin: true
                     , area: ['550px', '340px']
                     , btn: ['确定', '取消']
@@ -102,11 +99,11 @@
             }
 
             /* 删除 */
-            function doDel(param) {
+            function doDelete(param) {
                 layer.confirm('确定要删除选中数据吗？', function (index) {
                     layer.close(index);
                     $.ajax({
-                        url: '/admin/role/delete',
+                        url: '@AgileFormatUrl("delete")',
                         type: 'post',
                         data: { ids: param.ids.toString() },
                         beforeSend: function () {

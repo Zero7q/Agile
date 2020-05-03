@@ -18,15 +18,17 @@ namespace Agile.Web.Framework.Controllers
             return new K();
         }
 
-        public virtual K OnAddLoading()
+        public virtual void OnAddLoading(K model)
         {
-            return new K();
+
         }
 
         public virtual string OnAddLoaded(K model)
         {
             return string.Empty;
         }
+
+        public virtual void OnDeleteAfter(string ids) { }
 
         public virtual string OnAdding(K model)
         {
@@ -49,14 +51,14 @@ namespace Agile.Web.Framework.Controllers
 
         public virtual IPredicateGroup ListWhereFilter(K model)
         {
-            IPredicateGroup predicate = new PredicateGroup { Operator = GroupOperator.And, Predicates = new List<IPredicate>() };
+            var predicate = new PredicateGroup { Operator = GroupOperator.And, Predicates = new List<IPredicate>() };
             predicate.Predicates.Add(Predicates.Field<T>(f => f.IsEnabled, Operator.Eq, EnabledType.True));
             return predicate;
         }
 
         public virtual IList<ISort> ListSortFilter(K model)
         {
-            IList<ISort> sort = new List<ISort>();
+            var sort = new List<ISort>();
             sort.Add(new Sort { PropertyName = "id", Ascending = false });
             return sort;
         }
@@ -69,21 +71,6 @@ namespace Agile.Web.Framework.Controllers
         public virtual K ParseToModel(T info)
         {
             return (K)Parse(info, new K());
-        }
-
-        public virtual object Parse(object souce, object target)
-        {
-            var souceProperties = souce.GetType().GetProperties();
-            var targetProperties = target.GetType().GetProperties();
-            foreach (var sourcePropertyInfo in souceProperties)
-            {
-                var targetPropertyInfo = targetProperties.ToList().FirstOrDefault(s => s.Name.Equals(sourcePropertyInfo.Name));
-                if (targetPropertyInfo != null && targetPropertyInfo.PropertyType == sourcePropertyInfo.PropertyType)
-                {
-                    targetPropertyInfo.SetValue(target, sourcePropertyInfo.GetValue(souce));
-                }
-            }
-            return target;
         }
     }
 }

@@ -11,11 +11,13 @@ using System.Text;
 
 namespace Agile.Web.Framework.Controllers
 {
-    public class BaseTemplateController<T, K> : BaseTemplateAbstractController<T, K>//, ITemplateController<T,K>
+    public class BaseTemplateController<T, K> : BaseTemplateAbstractController<T, K>
         where T : BaseEntity, new()
         where K : BaseViewModel, new()
     {
         private readonly IRepository<T> _repository;
+
+
         public BaseTemplateController(IRepository<T> repository)
         {
             _repository = repository;
@@ -33,7 +35,7 @@ namespace Agile.Web.Framework.Controllers
         }
 
         [PermissionAttribute("view")]
-        public IActionResult GetData(K model)
+        public virtual IActionResult GetData(K model)
         {
             var sort = ListSortFilter(model);
             if (sort == null)
@@ -45,22 +47,21 @@ namespace Agile.Web.Framework.Controllers
             {
                 throw new ArgumentNullException(nameof(predicate));
             }
-            int page = model.Page - 1;
-            int resultsPerPage = model.Limit;
             int total;
-            var datas = _repository.GetPage(predicate, sort, page, resultsPerPage, out total);
+            var datas = _repository.GetPage(predicate, sort, model.Page -= 1, model.Limit, out total);
             var lists = new List<K>();
             foreach (var data in datas)
             {
                 lists.Add(ParseToModel(data));
             }
-            return Success(lists, total);
+            return SuccessJson(lists, total);
         }
 
         [PermissionAttribute("add")]
-        public IActionResult Add(int id)
+        public virtual IActionResult Add(int id)
         {
-            var model = OnAddLoading();
+            var model = new K();
+            OnAddLoading(model);
             if (model == null)
             {
                 throw new ArgumentNullException(nameof(model));
@@ -70,7 +71,7 @@ namespace Agile.Web.Framework.Controllers
 
         [HttpPost]
         [PermissionAttribute("add")]
-        public IActionResult Add(K model)
+        public virtual IActionResult Add(K model)
         {
             if (model == null)
             {
@@ -79,7 +80,7 @@ namespace Agile.Web.Framework.Controllers
             var message = OnAddLoaded(model);
             if (!string.IsNullOrWhiteSpace(message))
             {
-                return Error(message);
+                return ErrorJson(message);
             }
             var domain = ParseToDomain(model);
             if (domain.CreateTime.Date.Year == 1)
@@ -89,20 +90,20 @@ namespace Agile.Web.Framework.Controllers
             var result = OnAdding(model);
             if (!string.IsNullOrWhiteSpace(result))
             {
-                return Error(result);
+                return ErrorJson(result);
             }
             _repository.Insert(domain);
             OnAdded(domain);
-            return Success();
+            return SuccessJson();
         }
 
         [Permission("edit")]
-        public IActionResult Edit(int id)
+        public virtual IActionResult Edit(int id)
         {
             var domain = _repository.GetByCondition(Predicates.Field<T>(f => f.Id, Operator.Eq, id));
             if (domain == null)
             {
-                return Error("记录不存在！");
+                return ErrorJson("记录不存在！");
             }
             var model = ParseToModel(domain);
 
@@ -113,27 +114,27 @@ namespace Agile.Web.Framework.Controllers
 
         [HttpPost]
         [Permission("edit")]
-        public IActionResult Edit(K model)
+        public virtual IActionResult Edit(K model)
         {
             var domain = _repository.GetByCondition(Predicates.Field<T>(f => f.Id, Operator.Eq, model.Id));
             if (domain == null)
             {
-                return Error("记录不存在！");
+                return ErrorJson("记录不存在！");
             }
             var info = ParseToDomain(model);
             info.UpdateTime = DateTime.Now;
             _repository.Update(info);
             OnEdited(info);
-            return Success();
+            return SuccessJson();
         }
 
         [HttpPost]
         [PermissionAttribute("delete")]
-        public IActionResult Delete(string ids)
+        public virtual IActionResult Delete(string ids)
         {
             if (string.IsNullOrWhiteSpace(ids))
             {
-                return Error("参数不能为空！");
+                return ErrorJson("参数不能为空！");
             }
             string[] deleteIds = ids.Split(',');
             foreach (var id in deleteIds)
@@ -144,7 +145,8 @@ namespace Agile.Web.Framework.Controllers
                     _repository.Delete(info);
                 }
             }
-            return Success();
+            OnDeleteAfter(ids);
+            return SuccessJson();
         }
     }
 }

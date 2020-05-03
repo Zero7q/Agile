@@ -51,7 +51,7 @@ namespace Agile.Web.Areas.Admin.Controllers
         {
             var result = _menuService.GetMenus();
 
-            return Success(result);
+            return SuccessJson(result);
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Agile.Web.Areas.Admin.Controllers
         {
             var result = _menuService.GetTreeMenus();
 
-            return Success(result);
+            return SuccessJson(result);
         }
     }
 }
