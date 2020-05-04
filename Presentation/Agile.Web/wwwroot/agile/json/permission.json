@@ -1,0 +1,31 @@
+{
+  "code": 0,
+  "msg": "",
+  "count": 8,
+  "data": [
+    {
+      "username": "添加（add）"
+    },
+    {
+      "username": "删除（delete）"
+    },
+    {
+      "username": "修改（edit）"
+    },
+    {
+      "username": "查看（view）"
+    },
+    {
+      "username": "上传（upload）"
+    },
+    {
+      "username": "下载（download）"
+    },
+    {
+      "username": "导入（import）"
+    },
+    {
+      "username": "导出（export）"
+    }
+  ]
+}

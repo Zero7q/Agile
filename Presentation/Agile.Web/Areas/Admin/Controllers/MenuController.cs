@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Agile.Core.Domain;
+using Agile.Data;
+using Agile.Models.Domain;
 using Agile.Models.Infrastructure;
 using Agile.Models.ViewModels;
 using Agile.Services.Menus;
@@ -17,17 +19,20 @@ namespace Agile.Web.Areas.Admin.Controllers
     /// 菜单控制器
     /// </summary>
     [MenuAttribute(MenuType.Page, "系统管理|菜单管理", "/admin/menu/list")]
-    public class MenuController : BasePluginController
+    public class MenuController : BaseTemplateController<SysMenu, SysMenuViewModel>
     {
         private readonly IMenuService _menuService;
+        private readonly IRepository<SysMenu> _repository;
 
         /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="menuService"></param>
-        public MenuController(IMenuService menuService)
+        public MenuController(IMenuService menuService, IRepository<SysMenu> repository)
+            : base(repository)
         {
             _menuService = menuService;
+            _repository = repository;
         }
 
         /// <summary>
@@ -35,7 +40,7 @@ namespace Agile.Web.Areas.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [PermissionAttribute("view")]
-        public IActionResult List()
+        public override IActionResult List()
         {
             var model = new SysMenuViewModel();
             model.ParentSelectItems = _menuService.ParentSelectItems();
@@ -65,5 +70,29 @@ namespace Agile.Web.Areas.Admin.Controllers
 
             return SuccessJson(result);
         }
+
+
+        [PermissionAttribute("view")]
+        public override IActionResult GetData(SysMenuViewModel model)
+        {
+            var sort = ListSortFilter(model);
+            if (sort == null)
+            {
+                throw new ArgumentNullException(nameof(sort));
+            }
+            var predicate = ListWhereFilter(model);
+            if (predicate == null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
+            var datas = _repository.GetList(predicate, sort);
+            var lists = new List<SysMenuViewModel>();
+            foreach (var data in datas)
+            {
+                lists.Add(ParseToModel(data));
+            }
+            return SuccessJson(lists, lists.Count);
+        }
+
     }
 }

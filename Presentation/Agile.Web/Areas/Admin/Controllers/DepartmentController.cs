@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Agile.Core.Domain;
+using Agile.Core.Extensions;
+using Agile.Data;
 using Agile.Models.Domain;
 using Agile.Models.Infrastructure;
 using Agile.Models.ViewModels;
@@ -15,92 +17,104 @@ using Microsoft.AspNetCore.Mvc;
 namespace Agile.Web.Areas.Admin.Controllers
 {
     [MenuAttribute(MenuType.Page, "系统管理|部门管理", "/admin/department/list")]
-    public class DepartmentController : BasePluginController
+    public class DepartmentController : BaseTemplateController<SysDepartment, SysDepartmentViewModel>
     {
-        private readonly ISysDepartmentService _sysDepartmentService;
-        public DepartmentController(ISysDepartmentService sysDepartmentService)
+        private readonly IRepository<SysDepartment> _repository;
+        public DepartmentController(IRepository<SysDepartment> repository) : base(repository)
         {
-            _sysDepartmentService = sysDepartmentService;
+            _repository = repository;
         }
 
-        /// <summary>
-        /// 列表页
-        /// </summary>
-        /// <returns></returns>
-        [PermissionAttribute("view")]
-        public IActionResult List()
+        public override void OnAddLoading(SysDepartmentViewModel model)
         {
-            var model = new SysDepartmentViewModel();
-            return View(model);
+            Request.Query["parentid"].ToString().TryStringToInt(out int parentId);
+
+            model.ParentId = parentId;
         }
 
-        /// <summary>
-        /// 获取列表数据
-        /// </summary>
-        /// <returns>数据列表</returns>
-        [PermissionAttribute("view")]
-        public IActionResult GetData()
+        public override void OnEditloading(SysDepartmentViewModel model)
         {
-            object predicate = Predicates.Field<SysDepartment>(f => f.IsEnabled, Operator.Eq, EnabledType.True);
+            Request.Query["parentid"].ToString().TryStringToInt(out int parentId);
 
-            IList<ISort> sort = new List<ISort>();
-            sort.Add(new Sort { PropertyName = "id", Ascending = false });
-
-            int page = 0;
-
-            int resultsPerPage = 0;
-
-            int total;
-
-            var result = _sysDepartmentService.GetPage(predicate, sort, page, resultsPerPage, out total);
-
-            return SuccessJson(result, total);
+            model.ParentId = parentId;
         }
 
-        /// <summary>
-        /// 获取树列表数据
-        /// </summary>
-        /// <returns>数据列表</returns>
-        [PermissionAttribute("view")]
-        public IActionResult GetTreeData()
+        public override string OnAdding(SysDepartmentViewModel model)
         {
-            var result = _sysDepartmentService.GetTreeData();
-
-            return SuccessJson(result);
-        }
-
-        /// <summary>
-        /// 添加
-        /// </summary>
-        /// <returns>视图</returns>
-        [PermissionAttribute("add")]
-        public IActionResult Add()
-        {
-            var model = new SysDepartmentViewModel();
-
-            return View(model);
-        }
-
-        /// <summary>
-        /// 添加
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        [PermissionAttribute("add")]
-        public IActionResult Add(SysDepartmentViewModel sysDepartmentViewModel)
-        {
-            if (sysDepartmentViewModel == null)
+            if (model == null)
             {
-                throw new ArgumentNullException(nameof(sysDepartmentViewModel));
+                throw new ArgumentNullException(nameof(model));
             }
-            if (string.IsNullOrWhiteSpace(sysDepartmentViewModel.DepartmentName))
+            var department = _repository.GetByCondition(Predicates.Field<SysDepartment>(f => f.ParentId, Operator.Eq, -1));
+            if (department != null && model.ParentId == -1)
             {
-                return ErrorJson("部门名称不能为空！");
+                return "只允许一个顶级节点！";
             }
+            if (string.IsNullOrWhiteSpace(model.DepartmentName))
+            {
+                return "部门名称不能为空！";
+            }
+            if (department != null && department.DepartmentName.Equals(model.DepartmentName))
+            {
+                return "部门名称和顶级节点不能相同！";
+            }
+            var predicate = new PredicateGroup { Operator = GroupOperator.And, Predicates = new List<IPredicate>() };
+            predicate.Predicates.Add(Predicates.Field<SysDepartment>(f => f.DepartmentName, Operator.Eq, model.DepartmentName));
+            predicate.Predicates.Add(Predicates.Field<SysDepartment>(f => f.ParentId, Operator.Eq, model.ParentId));
+            if (_repository.GetByCondition(predicate) != null)
+            {
+                return "部门名称已存在！";
+            }
+            return string.Empty;
+        }
 
-            _sysDepartmentService.Insert(new SysDepartment() { DepartmentName = sysDepartmentViewModel.DepartmentName, CreateTime = DateTime.Now });
+        public override IActionResult GetData(SysDepartmentViewModel model)
+        {
+            var sort = ListSortFilter(model);
+            if (sort == null)
+            {
+                throw new ArgumentNullException(nameof(sort));
+            }
+            var predicate = ListWhereFilter(model);
+            if (predicate == null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
+            var datas = _repository.GetList(predicate, sort);
+            var lists = new List<SysDepartmentViewModel>();
+            foreach (var data in datas)
+            {
+                lists.Add(ParseToModel(data));
+            }
+            return SuccessJson(lists, lists.Count);
+        }
 
-            return SuccessJson();
+        public override void OnDeleteAfter(string ids)
+        {
+            string[] deleteIds = ids.Split(',');
+            foreach (var id in deleteIds)
+            {
+                var departments = _repository.GetList(Predicates.Field<SysDepartment>(f => f.ParentId, Operator.Eq, id));
+                if (departments != null)
+                {
+                    foreach (var department in departments)
+                    {
+                        _repository.Delete(department);
+                        OnDeleteAfter($"{department.Id}");
+                    }
+                }
+            }
+        }
+
+        public override IPredicateGroup ListWhereFilter(SysDepartmentViewModel model)
+        {
+            var predicate = new PredicateGroup { Operator = GroupOperator.And, Predicates = new List<IPredicate>() };
+            predicate.Predicates.Add(Predicates.Field<SysDepartment>(f => f.IsEnabled, Operator.Eq, EnabledType.True));
+            if (!string.IsNullOrWhiteSpace(model.DepartmentName))
+            {
+                predicate.Predicates.Add(Predicates.Field<SysDepartment>(f => f.DepartmentName, Operator.Like, $"%{model.DepartmentName}%"));
+            }
+            return predicate;
         }
     }
 }
