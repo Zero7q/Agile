@@ -23,7 +23,7 @@ namespace Agile.Web.Framework.Controllers
 
         }
 
-        public virtual string OnAddLoaded(K model)
+        public virtual string OnAddBefore(K model)
         {
             return string.Empty;
         }
@@ -35,7 +35,7 @@ namespace Agile.Web.Framework.Controllers
             return string.Empty;
         }
 
-        public virtual void OnAdded(T domain)
+        public virtual void OnAddAfter(K model, T domain)
         {
 
         }
@@ -44,7 +44,7 @@ namespace Agile.Web.Framework.Controllers
         {
 
         }
-        public virtual void OnEdited(T model)
+        public virtual void OnEditAfter(K model,T domain)
         {
 
         }

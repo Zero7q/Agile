@@ -77,7 +77,7 @@ namespace Agile.Web.Framework.Controllers
             {
                 throw new ArgumentNullException(nameof(model));
             }
-            var message = OnAddLoaded(model);
+            var message = OnAddBefore(model);
             if (!string.IsNullOrWhiteSpace(message))
             {
                 return ErrorJson(message);
@@ -93,7 +93,7 @@ namespace Agile.Web.Framework.Controllers
                 return ErrorJson(result);
             }
             _repository.Insert(domain);
-            OnAdded(domain);
+            OnAddAfter(model, domain);
             return SuccessJson();
         }
 
@@ -124,7 +124,7 @@ namespace Agile.Web.Framework.Controllers
             var info = ParseToDomain(model);
             info.UpdateTime = DateTime.Now;
             _repository.Update(info);
-            OnEdited(info);
+            OnEditAfter(model, info);
             return SuccessJson();
         }
 

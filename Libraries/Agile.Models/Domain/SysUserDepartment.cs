@@ -21,6 +21,6 @@ namespace Agile.Models.Domain
         /// <summary>
         /// 部门id
         /// </summary>
-        public string DepartmentId { get; set; }
+        public int DepartmentId { get; set; }
     }
 }

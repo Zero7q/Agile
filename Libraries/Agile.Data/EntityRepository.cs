@@ -111,28 +111,45 @@ namespace Agile.Data
 
         public void Insert(IEnumerable<TEntity> entities, int? commandTimeout = null)
         {
+            foreach (var entity in entities)
+            {
+                if (entity.CreateTime.Year == 1)
+                {
+                    entity.CreateTime = DateTime.Now;
+                }
+            }
             Database.Insert(entities, commandTimeout);
         }
 
         public dynamic Insert(TEntity entity, IDbTransaction transaction, int? commandTimeout = null)
         {
+            if (entity.CreateTime.Year == 1)
+            {
+                entity.CreateTime = DateTime.Now;
+            }
             Database.Insert(entity, transaction, commandTimeout);
             return entity;
         }
 
         public dynamic Insert(TEntity entity, int? commandTimeout = null)
         {
+            if (entity.CreateTime.Year == 1)
+            {
+                entity.CreateTime = DateTime.Now;
+            }
             Database.Insert(entity, commandTimeout);
             return entity;
         }
 
         public bool Update(TEntity entity, IDbTransaction transaction, int? commandTimeout = null, bool ignoreAllKeyProperties = false)
         {
+            entity.UpdateTime = DateTime.Now;
             return Database.Update(entity, transaction, commandTimeout, ignoreAllKeyProperties);
         }
 
         public bool Update(TEntity entity, int? commandTimeout = null, bool ignoreAllKeyProperties = false)
         {
+            entity.UpdateTime = DateTime.Now;
             return Database.Update(entity, commandTimeout, ignoreAllKeyProperties);
         }
 

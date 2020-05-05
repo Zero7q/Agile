@@ -46,6 +46,10 @@ namespace Agile.Web.Framework.Infrastructure
             builder.RegisterType<SysDepartmentService>().As<ISysDepartmentService>().SingleInstance();
 
             builder.RegisterType<SysRoleService>().As<ISysRoleService>().SingleInstance();
+
+            builder.RegisterType<UserDepartmentService>().As<IUserDepartmentService>().SingleInstance();
+
+            
         }
     }
 }

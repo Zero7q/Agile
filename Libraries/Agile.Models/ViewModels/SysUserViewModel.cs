@@ -8,7 +8,7 @@ namespace Agile.Models.ViewModels
     /// <summary>
     /// 用户前端模型
     /// </summary>
-    public class SysUserViewModel : BaseViewModel
+    public partial class SysUserViewModel : BaseViewModel
     {
         /// <summary>
         /// 登录账号
@@ -40,5 +40,14 @@ namespace Agile.Models.ViewModels
         /// </summary>
         [Display(Name = "最近登录IP")]
         public string LastLoginIp { get; set; }
+    }
+
+    /// <summary>
+    /// 用户前端模型 扩展
+    /// </summary>
+    public partial class SysUserViewModel
+    {
+        [Display(Name = "所属部门")]
+        public int DepartmentId { get; set; }
     }
 }

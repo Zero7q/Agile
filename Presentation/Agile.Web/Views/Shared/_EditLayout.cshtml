@@ -12,6 +12,14 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <style>
+        .agile-form-content {
+            padding: 20px 30px 0 0;
+        }
+        /*body{
+            padding-top:30%;
+        }*/
+    </style>
 </head>
 <body>
     <!-- 页面加载loading -->
@@ -24,23 +32,7 @@
     <div class="layui-fluid">
         <div class="layui-card">
             <div class="layui-card-body">
-                <div class="layui-form" lay-filter="layuiadmin-app-form-list" id="layuiadmin-app-form-list" style="padding: 20px 30px 0 0;">
-                    @*@for (int j = 0; j < 3; j++)
-                        {
-                            <div class="layui-row">
-                                @for (int i = 0; i < 3; i++)
-                                {
-                                    <div class="layui-col-sm4">
-                                        <div class="layui-form-item">
-                                            <label class="layui-form-label">文章标题</label>
-                                            <div class="layui-input-inline">
-                                                <input type="text" name="title" lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                        }*@
+                <div class="layui-form agile-form-content" lay-filter="layuiadmin-app-form-list" id="layuiadmin-app-form-list">
                     @RenderBody()
                     <div class="layui-form-item layui-hide">
                         <input type="button" lay-submit lay-filter="layuiadmin-app-form-submit" id="layuiadmin-app-form-submit" value="确认添加">
